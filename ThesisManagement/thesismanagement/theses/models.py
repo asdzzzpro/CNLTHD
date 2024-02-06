@@ -22,7 +22,7 @@ class Faculty(BaseModel):
 
 class User(AbstractUser):
     avatar = CloudinaryField('avatar', null=True)
-    faculty = models.ForeignKey(Faculty, on_delete=models.RESTRICT)
+    faculty = models.ForeignKey(Faculty, on_delete=models.RESTRICT, related_name='users', null=True)
 
 
 class AcademicManager(User):
@@ -30,23 +30,23 @@ class AcademicManager(User):
 
 
 class Lecturer(User):
-    theses = models.ManyToManyField('Thesis')
-
+    pass
 
 class Major(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, null=False)
 
     def __str__(self):
         return self.name
 
 
 class Student(User):
-    major = models.ForeignKey(Major, on_delete=models.RESTRICT)
-    thesis = models.ForeignKey('Thesis', on_delete=models.RESTRICT)
+    major = models.ForeignKey(Major, on_delete=models.RESTRICT, related_name='students')
+    thesis = models.ForeignKey('Thesis', on_delete=models.RESTRICT, related_name='students', null=True)
 
 
 class Committee(BaseModel):
-    lecturers = models.ManyToManyField(Lecturer, through='Member')
+    name = models.CharField(max_length=100, null=False)
+    lecturers = models.ManyToManyField(Lecturer, related_name='committees', through='Member')
 
 
 class LecturerRole(Enum):
@@ -58,16 +58,16 @@ class LecturerRole(Enum):
 
 class Member(BaseModel):
     role = models.CharField(LecturerRole, default=LecturerRole.member, max_length=50)
-    committee = models.ForeignKey(Committee, on_delete=models.RESTRICT)
-    lecturer = models.ForeignKey(Lecturer, on_delete=models.RESTRICT)
+    committee = models.ForeignKey(Committee, on_delete=models.RESTRICT, related_name='members')
+    lecturer = models.ForeignKey(Lecturer, on_delete=models.RESTRICT, related_name='members')
 
 
 class Thesis(BaseModel):
     name = models.CharField(max_length=255, null=False)
     average = models.FloatField(null=True)
-    major = models.ForeignKey(Major, on_delete=models.RESTRICT)
-    committee = models.ForeignKey(Committee, on_delete=models.RESTRICT)
-    criteria = models.ManyToManyField('Criteria', through='Score')
+    lecturers = models.ManyToManyField(Lecturer, related_name='theses')
+    committee = models.ForeignKey(Committee, on_delete=models.RESTRICT, related_name='theses', null=True)
+    criteria = models.ManyToManyField('Criteria', through='Score', related_name='theses')
 
 
 class Criteria(BaseModel):
@@ -79,6 +79,6 @@ class Criteria(BaseModel):
 
 class Score(BaseModel):
     score = models.FloatField(default=0)
-    thesis = models.ForeignKey(Thesis, on_delete=models.RESTRICT)
-    criteria = models.ForeignKey(Criteria, on_delete=models.RESTRICT)
-    lecturer = models.ForeignKey(Member, on_delete=models.RESTRICT)
+    thesis = models.ForeignKey(Thesis, on_delete=models.RESTRICT, related_name='scores')
+    criteria = models.ForeignKey(Criteria, on_delete=models.RESTRICT, related_name='scores')
+    lecturer = models.ForeignKey(Member, on_delete=models.RESTRICT, related_name='scores')

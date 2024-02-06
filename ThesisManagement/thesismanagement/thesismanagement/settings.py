@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'thesis.apps.ThesisConfig',
+    'theses.apps.ThesisConfig',
     'cloudinary',
+    'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -97,9 +99,9 @@ cloudinary.config(
     api_secret="5dIF5mGFoQmlmI5pYTMnIYjjkqA"
 )
 
-MEDIA_ROOT = '%s/thesis/static/' % BASE_DIR
+MEDIA_ROOT = '%s/theses/static/' % BASE_DIR
 
-AUTH_USER_MODEL = 'thesis.User'
+AUTH_USER_MODEL = 'theses.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
