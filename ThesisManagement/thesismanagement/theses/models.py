@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from cloudinary.models import CloudinaryField
 from enum import Enum
@@ -14,13 +15,20 @@ class BaseModel(models.Model):
 
 
 class Faculty(BaseModel):
-    name = models.CharField(max_length=50, null=False)
+    name = models.CharField(max_length=50, null=False, unique=True)
 
     def __str__(self):
         return self.name
 
 
+class UserRole(Enum):
+    ACADEMIC_MANAGER = 1
+    LECTURER = 2
+    STUDENT = 3
+
+
 class User(AbstractUser):
+    role = models.CharField(UserRole, max_length=50)
     avatar = CloudinaryField('avatar', null=True)
     faculty = models.ForeignKey(Faculty, on_delete=models.RESTRICT, related_name='users', null=True)
 
@@ -34,7 +42,7 @@ class Lecturer(User):
 
 
 class Major(models.Model):
-    name = models.CharField(max_length=50, null=False)
+    name = models.CharField(max_length=50, null=False, unique=True)
 
     def __str__(self):
         return self.name
@@ -46,40 +54,39 @@ class Student(User):
 
 
 class Committee(BaseModel):
-    name = models.CharField(max_length=100, null=False)
+    name = models.CharField(max_length=100, null=False, unique=True)
     lecturers = models.ManyToManyField(Lecturer, related_name='committees', through='Member')
 
 
-class LecturerRole(Enum):
-    chairman = 1
-    secretary = 2
-    critical_lecturer = 3
-    member = 4
+class MemberRole(Enum):
+    CHAIRMAN = 1
+    SECRETARY = 2
+    CRITICAL_LECTURER = 3
+    MEMBER = 4
 
 
 class Member(BaseModel):
-    role = models.CharField(LecturerRole, default=LecturerRole.member, max_length=50)
+    role = models.CharField(MemberRole, default=MemberRole.MEMBER, max_length=50)
     committee = models.ForeignKey(Committee, on_delete=models.RESTRICT, related_name='members')
     lecturer = models.ForeignKey(Lecturer, on_delete=models.RESTRICT, related_name='members')
 
 
 class Thesis(BaseModel):
     name = models.CharField(max_length=255, null=False)
-    average = models.FloatField(null=True)
     lecturers = models.ManyToManyField(Lecturer, related_name='theses')
     committee = models.ForeignKey(Committee, on_delete=models.RESTRICT, related_name='theses', null=True)
     criteria = models.ManyToManyField('Criteria', through='Score', related_name='theses')
 
 
 class Criteria(BaseModel):
-    name = models.CharField(max_length=255, null=False)
+    name = models.CharField(max_length=255, null=False, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Score(BaseModel):
-    score = models.FloatField(default=0)
+    score = models.FloatField(default=0.0, validators=[MaxValueValidator(limit_value=10.0), MinValueValidator(limit_value=0.0)])
     thesis = models.ForeignKey(Thesis, on_delete=models.RESTRICT, related_name='scores')
     criteria = models.ForeignKey(Criteria, on_delete=models.RESTRICT, related_name='scores')
     member = models.ForeignKey(Member, on_delete=models.RESTRICT, related_name='scores')

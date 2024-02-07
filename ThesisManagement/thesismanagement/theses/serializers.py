@@ -1,3 +1,5 @@
+import cloudinary
+
 from .models import *
 from rest_framework import serializers
 
@@ -11,6 +13,10 @@ class FacultySerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     faculty = FacultySerializer()
     fullname = serializers.SerializerMethodField(source='fullname')
+    avatar = serializers.SerializerMethodField(source='avatar')
+
+    def get_avatar(self, user):
+        return user.avatar.url
 
     def get_fullname(self, user):
         return user.last_name + user.first_name
@@ -38,7 +44,7 @@ class StudentDetailSerializer(StudentSerializer):
 
     class Meta:
         model = StudentSerializer.Meta.model
-        fields = StudentSerializer.Meta.fields + ['fullname', 'username', 'password', 'email', 'faculty', 'major']
+        fields = StudentSerializer.Meta.fields + ['fullname', 'username', 'password', 'email', 'faculty', 'major', 'avatar']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -60,12 +66,12 @@ class LecturerSerializer(UserSerializer):
 class LecturerDetailSerializer(LecturerSerializer):
     class Meta:
         model = LecturerSerializer.Meta.model
-        fields = LecturerSerializer.Meta.fields + ['fullname', 'username', 'password', 'email', 'faculty']
-        # extra_kwargs = {
-        #     'password': {
-        #         'write_only': True
-        #     },
-        # }
+        fields = LecturerSerializer.Meta.fields + ['fullname', 'username', 'password', 'email', 'faculty', 'avatar']
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            },
+        }
 
 
 class ThesisSerializer(serializers.ModelSerializer):
