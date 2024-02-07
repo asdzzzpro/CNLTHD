@@ -82,4 +82,4 @@ class Score(BaseModel):
     score = models.FloatField(default=0)
     thesis = models.ForeignKey(Thesis, on_delete=models.RESTRICT, related_name='scores')
     criteria = models.ForeignKey(Criteria, on_delete=models.RESTRICT, related_name='scores')
-    lecturer = models.ForeignKey(Member, on_delete=models.RESTRICT, related_name='scores')
+    member = models.ForeignKey(Member, on_delete=models.RESTRICT, related_name='scores')

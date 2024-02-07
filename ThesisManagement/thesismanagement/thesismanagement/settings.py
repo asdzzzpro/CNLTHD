@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'django-insecure-3r+)(d9!9(fkmn!4wwq4iim)_%d^fsqwmy&p9kw^g!5%z81dgz
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -41,6 +39,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
     'drf_yasg',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +53,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'thesismanagement.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
 
 TEMPLATES = [
     {
@@ -72,7 +77,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'thesismanagement.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -121,7 +125,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -133,7 +136,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -143,3 +145,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CLIENT_ID = 'L0qnZkSz13v3vxI0HLAH8tvfG6sm4b43u4gBQLOL'
+CLIENT_SECRET = 'YlCAhjqyS0axYaiOWjJyNFPBocdiV8uLDSjOiTIIyxSLEEe7CsCTTL35A5OLSRId2frOQFgRgMbBj01o9a7cPqA68Bo6HypefMvUM2lSFKJJgz7iyS5ErUmFVj4Cu7xD'
+
+OAUTH2_PROVIDER = {
+    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
+}

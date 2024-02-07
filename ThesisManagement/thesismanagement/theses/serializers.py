@@ -61,6 +61,11 @@ class LecturerDetailSerializer(LecturerSerializer):
     class Meta:
         model = LecturerSerializer.Meta.model
         fields = LecturerSerializer.Meta.fields + ['fullname', 'username', 'password', 'email', 'faculty']
+        # extra_kwargs = {
+        #     'password': {
+        #         'write_only': True
+        #     },
+        # }
 
 
 class ThesisSerializer(serializers.ModelSerializer):
@@ -128,16 +133,20 @@ class CriteriaDetailSerializer(CriteriaSerializer):
         fields = CriteriaSerializer.Meta.fields + ['name']
 
 
-class MemberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Member
-        fields = ['id']
-
-
 class ScoreSerializer(serializers.ModelSerializer):
     thesis = ThesisSerializer()
-    lecturer = MemberSerializer()
+    member = MemberSerializer()
 
     class Meta:
         model = Score
-        fields = ['thesis', 'lecturer', 'criteria_id', 'score']
+        fields = ['thesis', 'member', 'criteria_id', 'score']
+
+
+class ThesisDetailSerializer(serializers.ModelSerializer):
+    students = StudentDetailSerializer(many=True)
+    lecturers = LecturerDetailSerializer(many=True)
+    committee = CommitteeSerializer()
+
+    class Meta:
+        model = Thesis
+        fields = ['name', 'students', 'lecturers', 'committee', 'average']
