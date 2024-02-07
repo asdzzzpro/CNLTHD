@@ -32,6 +32,7 @@ class AcademicManager(User):
 class Lecturer(User):
     pass
 
+
 class Major(models.Model):
     name = models.CharField(max_length=50, null=False)
 

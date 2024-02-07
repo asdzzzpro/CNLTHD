@@ -68,7 +68,7 @@ class ThesisSerializer(serializers.ModelSerializer):
     lecturers = LecturerSerializer(many=True)
 
     def create(self, validated_data):
-        data = validated_data
+        data = validated_data.copy()
 
         t = Thesis.objects.create(name=data['name'])
 
@@ -90,6 +90,8 @@ class ThesisSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    lecturer = LecturerSerializer()
+
     class Meta:
         model = Member
         fields = ['lecturer', 'role']
@@ -98,6 +100,44 @@ class MemberSerializer(serializers.ModelSerializer):
 class CommitteeSerializer(serializers.ModelSerializer):
     members = MemberSerializer(many=True)
 
+    def create(self, validated_data):
+        data = validated_data.copy()
+
+        c = Committee.objects.create(name=data['name'])
+
+        for lecturer in data['members']:
+            member = Member.objects.create(committee=c, lecturer_id=lecturer['lecturer']['id'], role=lecturer['role'])
+            member.save()
+
+        return c
+
     class Meta:
         model = Committee
         fields = ['name', 'members']
+
+
+class CriteriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Criteria
+        fields = ['id']
+
+
+class CriteriaDetailSerializer(CriteriaSerializer):
+    class Meta:
+        model = CriteriaSerializer.Meta.model
+        fields = CriteriaSerializer.Meta.fields + ['name']
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ['id']
+
+
+class ScoreSerializer(serializers.ModelSerializer):
+    thesis = ThesisSerializer()
+    lecturer = MemberSerializer()
+
+    class Meta:
+        model = Score
+        fields = ['thesis', 'lecturer', 'criteria_id', 'score']
