@@ -1,7 +1,7 @@
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from theses import serializers, perms
+from theses import serializers, perms, configs
 from theses.models import *
 
 
@@ -27,6 +27,19 @@ class ThesisViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIVi
 
     def retrieve(self, request, *args, **kwargs):
         return Response(serializers.ThesisDetailSerializer(self.get_object()).data)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+
+        student_count = len(data.get('students'))
+        if student_count < configs.MIN_STUDENT or student_count > configs.MAX_STUDENT:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        lecturer_count = len(data.get('lecturers'))
+        if lecturer_count < configs.MIN_LECTURER or lecturer_count > configs.MAX_LECTURER:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return super().create(request, *args, **kwargs)
 
     @action(methods=['post'], url_path='scores', detail=True)
     def add_score(self, request, pk):
@@ -62,6 +75,15 @@ class CommitteeViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAP
 
     def list(self, request, *args, **kwargs):
         return Response(serializers.CommitteeDetailSerializer(self.get_queryset(), many=True).data)
+    
+    def create(self, request, *args, **kwargs):
+        data = request.data
+
+        member_count = len(data.get('members'))
+        if member_count < configs.MIN_MEMBER or member_count > configs.MAX_MEMBER:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        return super().create(request, *args, **kwargs)
 
 
 class StudentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
