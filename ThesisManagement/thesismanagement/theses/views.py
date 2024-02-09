@@ -33,11 +33,11 @@ class ThesisViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIVi
 
         student_count = len(data.get('students'))
         if student_count < configs.MIN_STUDENT or student_count > configs.MAX_STUDENT:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Khóa luận chỉ được thực hiện bởi 1 đển 2 sinh viên"}, status=status.HTTP_400_BAD_REQUEST)
 
         lecturer_count = len(data.get('lecturers'))
         if lecturer_count < configs.MIN_LECTURER or lecturer_count > configs.MAX_LECTURER:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Khóa luận chỉ được hướng dẫn bởi 1 đển 2 giảng viên"}, status=status.HTTP_400_BAD_REQUEST)
 
         return super().create(request, *args, **kwargs)
 
@@ -52,8 +52,14 @@ class ThesisViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIVi
 
     @action(methods=['post'], url_path='committee', detail=True)
     def add_committee(self, request, pk):
+        committee_id = request.data.get('committee_id')
+
+        committee = Committee.objects.get(id=committee_id)
+        if committee.theses.count() >= configs.MAX_THESIS:
+            return Response({"message": "Hội đồng đã chấm tối đa 5 khóa luận"}, status=status.HTTP_400_BAD_REQUEST)
+
         thesis = self.get_object()
-        thesis.committee_id = request.data.get('committee_id')
+        thesis.committee_id = committee_id
         thesis.save()
 
         return Response(serializers.ThesisDetailSerializer(thesis).data, status.HTTP_200_OK)
@@ -81,7 +87,7 @@ class CommitteeViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAP
 
         member_count = len(data.get('members'))
         if member_count < configs.MIN_MEMBER or member_count > configs.MAX_MEMBER:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Hội đồng chỉ được từ 3 đến 5 thành viên"}, status=status.HTTP_400_BAD_REQUEST)
         
         return super().create(request, *args, **kwargs)
 
