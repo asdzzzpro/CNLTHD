@@ -77,6 +77,9 @@ class Thesis(BaseModel):
     committee = models.ForeignKey(Committee, on_delete=models.RESTRICT, related_name='theses', null=True)
     criteria = models.ManyToManyField('Criteria', through='Score', related_name='theses')
 
+    def __str__(self):
+        return self.name
+
 
 class Criteria(BaseModel):
     name = models.CharField(max_length=255, null=False, unique=True)
@@ -86,7 +89,11 @@ class Criteria(BaseModel):
 
 
 class Score(BaseModel):
-    score = models.FloatField(default=0.0, validators=[MaxValueValidator(limit_value=10.0), MinValueValidator(limit_value=0.0)])
+    score = models.FloatField(default=0.0, validators=[MaxValueValidator(limit_value=10.0),
+                                                       MinValueValidator(limit_value=0.0)])
     thesis = models.ForeignKey(Thesis, on_delete=models.RESTRICT, related_name='scores')
     criteria = models.ForeignKey(Criteria, on_delete=models.RESTRICT, related_name='scores')
     member = models.ForeignKey(Member, on_delete=models.RESTRICT, related_name='scores')
+
+    class Meta:
+        unique_together = ('thesis', 'criteria', 'member')

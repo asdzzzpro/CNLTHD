@@ -108,6 +108,23 @@ class MemberSerializer(serializers.ModelSerializer):
         fields = ['lecturer', 'role']
 
 
+class MemberDetailSerializer(MemberSerializer):
+    lecturer = LecturerDetailSerializer()
+    role = serializers.SerializerMethodField(source='role')
+
+    def get_role(self, member):
+        if member.role == 'CHAIRMAN':
+            return 'Chủ tịch'
+        if member.role == 'SECRETARY':
+            return 'Thư kí'
+        if member.role == 'CRITICAL_LECTURER':
+            return 'Giảng viên phản biện'
+
+    class Meta:
+        model = MemberSerializer.Meta.model
+        fields = MemberSerializer.Meta.fields
+
+
 class CommitteeSerializer(serializers.ModelSerializer):
     members = MemberSerializer(many=True)
 
@@ -125,6 +142,14 @@ class CommitteeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Committee
         fields = ['name', 'members']
+
+
+class CommitteeDetailSerializer(CommitteeSerializer):
+    members = MemberDetailSerializer(many=True)
+
+    class Meta:
+        model = CommitteeSerializer.Meta.model
+        fields = CommitteeSerializer.Meta.fields
 
 
 class CriteriaSerializer(serializers.ModelSerializer):
@@ -151,7 +176,16 @@ class ScoreSerializer(serializers.ModelSerializer):
 class ThesisDetailSerializer(serializers.ModelSerializer):
     students = StudentDetailSerializer(many=True)
     lecturers = LecturerDetailSerializer(many=True)
-    committee = CommitteeSerializer()
+    committee = CommitteeDetailSerializer()
+    average = serializers.SerializerMethodField(source='average')
+
+    def get_average(self, thesis):
+        average = 0.0
+        for score in thesis.scores.all():
+            average = average + score.score
+        average = float(average / thesis.committee.members.all().count())
+
+        return round(average, 2)
 
     class Meta:
         model = Thesis
