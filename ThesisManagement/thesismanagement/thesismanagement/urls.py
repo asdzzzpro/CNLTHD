@@ -19,6 +19,8 @@ from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from theses.admin import admin_site
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -34,7 +36,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('', include('theses.urls')),
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     path('o/', include('oauth2_provider.urls',
                        namespace='oauth2_provider')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',

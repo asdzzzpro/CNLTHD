@@ -32,6 +32,9 @@ class User(AbstractUser):
     avatar = CloudinaryField('avatar', null=True)
     faculty = models.ForeignKey(Faculty, on_delete=models.RESTRICT, related_name='users', null=True)
 
+    def __str__(self):
+        return self.last_name + self.first_name
+
 
 class AcademicManager(User):
     pass
@@ -56,6 +59,9 @@ class Student(User):
 class Committee(BaseModel):
     name = models.CharField(max_length=100, null=False, unique=True)
     lecturers = models.ManyToManyField(Lecturer, related_name='committees', through='Member')
+
+    def __str__(self):
+        return self.name
 
 
 class MemberRole(Enum):
