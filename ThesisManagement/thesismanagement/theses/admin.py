@@ -1,20 +1,9 @@
 from django.contrib import admin
-from django.urls import path
 from .models import *
 
 
 class CourseAppAdminSite(admin.AdminSite):
     site_header = "HỆ THỐNG QUẢN LÝ KHÓA LUẬN TỐT NGHIỆP"
-
-    # def get_urls(self):
-    #     return [
-    #                path('course-stats/', self.stats_view)
-    #            ] + super().get_urls()
-
-    # def stats_view(self, request):
-    #     return TemplateResponse(request, 'admin/stats.html', {
-    #         "stats": dao.count_courses_by_cate_id()
-    #     })
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -27,15 +16,16 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class AcademicManagerAdmin(UserAdmin):
+
     def save_model(self, request, obj, form, change):
-        obj.role = UserRole.ACADEMIC_MANAGER
+        obj.role = UserRole.ACADEMIC_MANAGER.value
 
         super().save_model(request, obj, form, change)
 
 
 class LecturerAdmin(UserAdmin):
     def save_model(self, request, obj, form, change):
-        obj.role = UserRole.ACADEMIC_MANAGER.value
+        obj.role = UserRole.LECTURER.value
 
         super().save_model(request, obj, form, change)
 
@@ -45,13 +35,17 @@ class StudentAdmin(UserAdmin):
     exclude = ['thesis']
 
     def save_model(self, request, obj, form, change):
-        obj.role = UserRole.ACADEMIC_MANAGER
+        obj.role = UserRole.STUDENT.value
 
         super().save_model(request, obj, form, change)
 
 
-admin_site = CourseAppAdminSite(name='MyApp')
+class ThesisAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
 
+
+admin_site = CourseAppAdminSite(name='MyApp')
 
 admin_site.register(Faculty)
 admin_site.register(AcademicManager, AcademicManagerAdmin)
@@ -59,5 +53,5 @@ admin_site.register(Lecturer, LecturerAdmin)
 admin_site.register(Student, StudentAdmin)
 admin_site.register(Major)
 admin_site.register(Committee)
-admin_site.register(Thesis)
+admin_site.register(Thesis, ThesisAdmin)
 admin_site.register(Criteria)

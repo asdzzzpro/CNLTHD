@@ -7,7 +7,7 @@ class IsAcademicManagerAuthenticated(permissions.IsAuthenticated):
         if request.user.is_anonymous:
             return False
 
-        return bool(request.user.role == 'ACADEMIC_MANAGER')
+        return bool(request.user.role == UserRole.ACADEMIC_MANAGER.value)
 
 
 class IsLecturerAuthenticated(permissions.IsAuthenticated):

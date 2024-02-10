@@ -113,12 +113,14 @@ class MemberDetailSerializer(MemberSerializer):
     role = serializers.SerializerMethodField(source='role')
 
     def get_role(self, member):
-        if member.role == 'CHAIRMAN':
+        if member.role == MemberRole.CHAIRMAN.value:
             return 'Chủ tịch'
-        if member.role == 'SECRETARY':
+        if member.role == MemberRole.SECRETARY.value:
             return 'Thư kí'
-        if member.role == 'CRITICAL_LECTURER':
+        if member.role == MemberRole.CRITICAL_LECTURER.value:
             return 'Giảng viên phản biện'
+        if member.role == MemberRole.MEMBER.value:
+            return 'Thành viên'
 
     class Meta:
         model = MemberSerializer.Meta.model

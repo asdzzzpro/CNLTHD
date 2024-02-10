@@ -33,7 +33,7 @@ class ThesisViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIVi
 
         student_count = len(data.get('students'))
         if student_count < configs.MIN_STUDENT or student_count > configs.MAX_STUDENT:
-            return Response({"message": "Khóa luận chỉ được thực hiện bởi 1 đển 2 sinh viên"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Khóa luận chỉ được thực hiện    bởi 1 đển 2 sinh viên"}, status=status.HTTP_400_BAD_REQUEST)
 
         lecturer_count = len(data.get('lecturers'))
         if lecturer_count < configs.MIN_LECTURER or lecturer_count > configs.MAX_LECTURER:
