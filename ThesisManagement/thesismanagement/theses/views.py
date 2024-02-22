@@ -159,3 +159,13 @@ class CriteriaViewSet(viewsets.ViewSet,generics.CreateAPIView, generics.ListAPIV
             return [permissions.OR(perms.IsAcademicManagerAuthenticated(), perms.IsLecturerOfAuthenticated())]
 
         return self.permission_classes
+
+
+class UserViewSet(viewsets.ViewSet):
+    queryset = User.objects.filter(is_active=True).all()
+    serializer_class = serializers.UserDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(methods=['get'], url_path='current-user', url_name='current-user', detail=False)
+    def current_user(self, request):
+        return Response(serializers.UserDetailSerializer(request.user).data)

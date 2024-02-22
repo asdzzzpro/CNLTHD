@@ -28,6 +28,25 @@ class MajorSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+class UserDetailSerializer(UserSerializer):
+    major = serializers.SerializerMethodField(source='major')
+
+    def get_major(self, user):
+        if user.role == 'student':
+            return user.student.major.name
+
+        return None
+
+    class Meta:
+        model = User
+        fields = ['id', 'fullname', 'username', 'password', 'email', 'role', 'faculty', 'major', 'avatar']
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            },
+        }
+
+
 class StudentSerializer(UserSerializer):
     class Meta:
         model = Student

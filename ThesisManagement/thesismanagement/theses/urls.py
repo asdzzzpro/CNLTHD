@@ -9,6 +9,7 @@ router.register('committees', views.CommitteeViewSet, basename='committees')
 router.register('students', views.StudentViewSet, basename='students')
 router.register('lecturers', views.LecturerViewSet, basename='lecturers')
 router.register('criteria', views.CriteriaViewSet, basename='criteria')
+router.register('users', views.UserViewSet, basename='users')
 
 urlpatterns = [
     path('', include(router.urls))
