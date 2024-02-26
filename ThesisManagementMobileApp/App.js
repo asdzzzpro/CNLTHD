@@ -12,11 +12,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator()
 
-const HomeDrawer = () => {
-  <Drawer.Navigator initialRouteName='Home'>
-    <Drawer.Screen name='Login' component={Login} options={{ title: 'Trang chủ' }} />
-    <Drawer.Screen name='Home' component={Home} options={{ title: 'Trang chủ' }} />
-  </Drawer.Navigator>
+const HomeStack = () => {
+  <Stack.Navigator initialRouteName='Home'>
+    
+  </Stack.Navigator>
 }
 
 const App = () => {
@@ -26,8 +25,9 @@ const App = () => {
   return (
     <MyContext.Provider value={[user, dispatch]}>
       <NavigationContainer >
-        <Stack.Navigator initialRouteName='Login'>
-          <Stack.Screen name='Login' component={Login}
+        <Drawer.Navigator initialRouteName='Login'>
+          {user===null?<>
+            <Drawer.Screen name='Login' component={Login}
             options=
             {
               {
@@ -37,8 +37,11 @@ const App = () => {
                 },
               }
             } />
-          <Stack.Screen name='Home' component={HomeDrawer}/>
-        </Stack.Navigator>
+          </>:<>
+            <Drawer.Screen name={user?.fullname} component={Home}/>
+            <Drawer.Screen name='Home' component={Home} options={{ title: 'Trang chủ' }} />
+          </>}
+        </Drawer.Navigator>
       </NavigationContainer>
     </MyContext.Provider>
   );

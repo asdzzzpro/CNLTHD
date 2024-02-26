@@ -15,7 +15,7 @@ class IsLecturerAuthenticated(permissions.IsAuthenticated):
         if request.user.is_anonymous:
             return False
 
-        return bool(request.user.role == 'LECTURER')
+        return bool(request.user.role == UserRole.LECTURER.value)
 
 
 class IsStudentAuthenticated(permissions.IsAuthenticated):
@@ -23,7 +23,7 @@ class IsStudentAuthenticated(permissions.IsAuthenticated):
         if request.user.is_anonymous:
             return False
 
-        return bool(request.user.role == 'STUDENT')
+        return bool(request.user.role == UserRole.STUDENT.value)
 
 
 class IsLecturerOfAuthenticated(IsLecturerAuthenticated):
@@ -40,8 +40,8 @@ class IsMemberOfCommitteeOfAuthenticated(IsLecturerAuthenticated):
     def has_object_permission(self, request, view, obj):
         is_member = False
 
-        for lecturer in obj.lecturers.all():
-            if lecturer.user_ptr == request.user:
+        for member in obj.lecturers.all():
+            if member.user_ptr == request.user:
                 is_member = True
                 break
 

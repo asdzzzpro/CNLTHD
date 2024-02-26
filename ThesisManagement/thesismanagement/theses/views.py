@@ -71,7 +71,7 @@ class CommitteeViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAP
     permission_classes = [perms.IsAcademicManagerAuthenticated()]
 
     def get_permissions(self):
-        if self.action in ['retrieve']:
+        if self.action in ['retrieve', 'get_theses']:
             return [permissions.OR(perms.IsAcademicManagerAuthenticated(), perms.IsMemberOfCommitteeOfAuthenticated())]
 
         return self.permission_classes
@@ -90,6 +90,12 @@ class CommitteeViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAP
             return Response({"message": "Hội đồng chỉ được từ 3 đến 5 thành viên"}, status=status.HTTP_400_BAD_REQUEST)
         
         return super().create(request, *args, **kwargs)
+
+    @action(methods=['get'], url_path='theses', detail=True)
+    def get_theses(self, request, pk):
+        theses = self.get_object().theses.filter(active=True)
+
+        return Response(serializers.ThesisDetailSerializer(theses, many=True, context={'request': request}).data, status=status.HTTP_200_OK)
 
 
 class StudentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):

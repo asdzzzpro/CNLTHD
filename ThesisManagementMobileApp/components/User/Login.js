@@ -3,7 +3,7 @@ import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
 import { useContext, useState } from "react";
 import MyContext from '../../configs/MyContext';
-import API, { endpoints } from '../../configs/API';
+import API, { authAPI, endpoints } from '../../configs/API';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({navigation}) => {
@@ -24,14 +24,12 @@ const Login = ({navigation}) => {
                 'grant_type': 'password'
             })
 
-            // await AsyncStorage.setItem('access-token', res.data.access_token)
-            // let user = await authAPI(res.data.access_token).get(endpoints['current-user']);
-            // dispatch({
-            //     type: 'login',
-            //     payload: user.data
-            // })
-
-            console.info(res.data.access_token)
+            await AsyncStorage.setItem('access-token', res.data.access_token)
+            let user = await authAPI(res.data.access_token).get(endpoints['current-user']);
+            dispatch({
+                type: 'login',
+                payload: user.data
+            })
             
             navigation.navigate('Home')
         } catch (ex) {
@@ -43,7 +41,7 @@ const Login = ({navigation}) => {
 
     return (
         <View style={[MyStyle.container, MyStyle.elevation, Style.bg]}>
-            <Text style={[MyStyle.mb_20, MyStyle.f_10, Style.title]}>ĐĂNG NHẬP</Text>
+            <Text style={[MyStyle.mb_24, MyStyle.f_10, Style.title]}>ĐĂNG NHẬP</Text>
             <TextInput style={[Style.input, MyStyle.mb_20]} value={username} onChangeText={t => setUsername(t)} placeholder="Nhập tên đăng nhập" />
             <TextInput style={[Style.input, MyStyle.mb_20]} value={password} onChangeText={t => setPassword(t)} secureTextEntry={true} placeholder="Nhập mật khẩu" />
             {loading === true ? <ActivityIndicator/> : <>

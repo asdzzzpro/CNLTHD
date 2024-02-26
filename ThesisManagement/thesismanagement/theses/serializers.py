@@ -210,4 +210,4 @@ class ThesisDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Thesis
-        fields = ['name', 'students', 'lecturers', 'committee', 'average']
+        fields = ['id', 'name', 'students', 'lecturers', 'committee', 'average', 'created_date', 'updated_date', 'active']
