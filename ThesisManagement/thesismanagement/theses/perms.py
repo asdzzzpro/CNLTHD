@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from .models import UserRole, MemberRole
+from .models import UserRole
 
 
 class IsAcademicManagerAuthenticated(permissions.IsAuthenticated):
