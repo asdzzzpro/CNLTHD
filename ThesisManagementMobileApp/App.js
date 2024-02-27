@@ -8,6 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Login from './components/User/Login';
 import Home from './components/Home/Home';
 import { createStackNavigator } from '@react-navigation/stack';
+import Profile from './components/User/Profile';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator()
@@ -38,7 +39,7 @@ const App = () => {
               }
             } />
           </>:<>
-            <Drawer.Screen name={user?.fullname} component={Home}/>
+            <Drawer.Screen name={user?.fullname} component={Profile}/>
             <Drawer.Screen name='Home' component={Home} options={{ title: 'Trang chủ' }} />
           </>}
         </Drawer.Navigator>

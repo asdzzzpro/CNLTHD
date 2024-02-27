@@ -30,6 +30,7 @@ class MajorSerializer(serializers.ModelSerializer):
 
 class UserDetailSerializer(UserSerializer):
     major = serializers.SerializerMethodField(source='major')
+    committees = serializers.SerializerMethodField(source='committees')
 
     def get_major(self, user):
         if user.role == 'student':
@@ -37,9 +38,21 @@ class UserDetailSerializer(UserSerializer):
 
         return None
 
+    def get_committees(self, user):
+        if user.role == 'lecturer':
+            committees = []
+            for committee in user.lecturer.committees.all():
+                data = {
+                    'id': committee.id
+                }
+                committees.append(data)
+            return committees
+
+        return None
+
     class Meta:
         model = User
-        fields = ['id', 'fullname', 'username', 'password', 'email', 'role', 'faculty', 'major', 'avatar']
+        fields = ['id', 'fullname', 'username', 'password', 'email', 'role', 'faculty', 'major', 'avatar', 'committees']
         extra_kwargs = {
             'password': {
                 'write_only': True

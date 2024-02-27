@@ -1,16 +1,40 @@
 import { Text, View } from "react-native"
 import MyStyle from "../../styles/MyStyle";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Style from "./Style";
 import { ScrollView } from "react-native";
+import MyContext from "../../configs/MyContext";
+import API, { authAPI, endpoints } from "../../configs/API";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = () => {
 
     const [theses, setTheses] = useState();
+    const [user, ] = useContext(MyContext);
 
     useEffect(() => {
+        let theses = [];
+
+        user?.committees.forEach(committee => {
+
+            const loadThesis = async () => {
+                let accessToken = await AsyncStorage.getItem("access-token")
+                let res = await authAPI(accessToken).get(endpoints['theses-need-grading'](committee.id))
+
+                if (res.data.length !== 0) {
+                    console.info(res.data)
+                    theses.map(res.data)
+                }
+            }
+
+            loadThesis();
+        });
+
+        setTheses(theses)
 
     }, [])
+
+    console.info(theses)
 
     return (
         <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: 'center', flex: 1}}>

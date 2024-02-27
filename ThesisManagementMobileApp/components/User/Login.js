@@ -41,7 +41,7 @@ const Login = ({navigation}) => {
 
     return (
         <View style={[MyStyle.container, MyStyle.elevation, Style.bg]}>
-            <Text style={[MyStyle.mb_24, MyStyle.f_10, Style.title]}>ĐĂNG NHẬP</Text>
+            <Text style={[MyStyle.mb_20, MyStyle.f_10, Style.title]}>ĐĂNG NHẬP</Text>
             <TextInput style={[Style.input, MyStyle.mb_20]} value={username} onChangeText={t => setUsername(t)} placeholder="Nhập tên đăng nhập" />
             <TextInput style={[Style.input, MyStyle.mb_20]} value={password} onChangeText={t => setPassword(t)} secureTextEntry={true} placeholder="Nhập mật khẩu" />
             {loading === true ? <ActivityIndicator/> : <>

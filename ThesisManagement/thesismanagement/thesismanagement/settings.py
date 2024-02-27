@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-3r+)(d9!9(fkmn!4wwq4iim)_%d^fsqwmy&p9kw^g!5%z81dgz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ngovanlau.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -88,10 +88,10 @@ WSGI_APPLICATION = 'thesismanagement.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ngovanlau$thesisdb',
-        'USER': 'ngovanlau',
-        'PASSWORD': 'lau12345',
-        'HOST': 'ngovanlau.mysql.pythonanywhere-services.com'  # mặc định localhost
+        'NAME': 'thesisdb',
+        'USER': 'root',
+        'PASSWORD': '12345',
+        'HOST': ''  # mặc định localhost
     }
 }
 
@@ -144,10 +144,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-import os
-
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
 STATIC_URL = 'static/'
 
 # Default primary key field type
@@ -155,8 +151,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = 'uzeYnfJTsi5mVDNzQeTLH53ikp9gNqcGXFzOAOqZ'
-CLIENT_SECRET = 'pSVc63teoQoe6Dfnes9DksGdEW9pAbI2uUMkCmz1LU5N0rY5PGTf8gZVKPlQ43Ec74211V0DEw7i8FotI1QytI2ngOMQv7qFSvHbZkhqChuEmc4eqiiB7PuTqajdfHKu'
+CLIENT_ID = '6xOVglHxxwlRlYiscrIMOOX7T1w5S9SVThsANDWq'
+CLIENT_SECRET = '5YGhTOHq1VAcHuzoWhs5Dq7aRuO169iFrT6ysn3JQgbbUIFQLOGLdqwCM6RvfEhsHHIR75O2dv2eB40FcHu0Do71AHaenAKd991na7stWn6NpEF8jRA19GoNWiDgdaGv'
 
 OAUTH2_PROVIDER = {
     'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
