@@ -1,4 +1,4 @@
-import { Text, View } from "react-native"
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native"
 import MyStyle from "../../styles/MyStyle";
 import { useContext, useEffect, useState } from "react";
 import Style from "./Style";
@@ -6,48 +6,61 @@ import { ScrollView } from "react-native";
 import MyContext from "../../configs/MyContext";
 import API, { authAPI, endpoints } from "../../configs/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
 
-const Home = () => {
+const Home = ({ navigation }) => {
 
-    const [theses, setTheses] = useState();
-    const [user, ] = useContext(MyContext);
+    const [theses, setTheses] = useState(null);
+    const [user,] = useContext(MyContext);
 
     useEffect(() => {
-        let theses = [];
+        let lecturerTheses = [];
 
-        user?.committees.forEach(committee => {
+        const loadThesis = async (committee) => {
+            try {
+                let accessToken = await AsyncStorage.getItem('access-token')
 
-            const loadThesis = async () => {
-                let accessToken = await AsyncStorage.getItem("access-token")
                 let res = await authAPI(accessToken).get(endpoints['theses-need-grading'](committee.id))
 
-                if (res.data.length !== 0) {
-                    console.info(res.data)
-                    theses.map(res.data)
-                }
-            }
+                let data = res.data
 
-            loadThesis();
+                if (data.length !== 0) {
+                    lecturerTheses = lecturerTheses.concat(res.data)
+                    setTheses(lecturerTheses)
+                }
+            } catch (ex) {
+                console.error
+            }
+        }
+
+        user?.committees.forEach(committee => {
+            loadThesis(committee);
         });
 
-        setTheses(theses)
+    }, [navigation])
 
-    }, [])
-
-    console.info(theses)
+    const thesisDetail = (thesisId) => {
+        navigation.navigate('Thesis', { 'thesisId': thesisId })
+    }
 
     return (
-        <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-            <View style={[MyStyle.elevation, Style.card, MyStyle.mb_20]}>
-                <View style={[MyStyle.row, MyStyle.between]}>
-                    <Text style={[Style.title]}>Quản lý khách sản</Text>
-                    <Text style={[MyStyle.elevation, Style.score]}>9.0</Text>
-                </View>
-                <Text style={[MyStyle.f_16]}>SV:</Text>
-                <Text style={[MyStyle.f_16]}>GVHD:</Text>
-                <Text style={[MyStyle.f_16]}>Hội đồng:</Text>
-                <Text style={[MyStyle.f_16]}>Ngày tạo:</Text>
-            </View>
+        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+            {theses === null ? <ActivityIndicator /> : <>
+                {theses.map(thesis => (
+                    <TouchableOpacity onPress={() => thesisDetail(thesis.id)}>
+                        <View style={[MyStyle.elevation, Style.card, MyStyle.mb_20]} >
+                            <View style={[MyStyle.row, MyStyle.between]}>
+                                <Text style={[Style.title]}>{thesis.name}</Text>
+                                <Text style={[MyStyle.elevation, Style.score]}>{thesis.average}</Text>
+                            </View>
+                            <Text style={[MyStyle.f_16]}>SV: {thesis.students.map(student => student.fullname)}</Text>
+                            <Text style={[MyStyle.f_16]}>GVHD: {thesis.lecturers.map(lecturer => lecturer.fullname)}</Text>
+                            <Text style={[MyStyle.f_16]}>Hội đồng: {thesis.committee.name}</Text>
+                            <Text style={[MyStyle.f_16]}>Ngày tạo: {moment(thesis.created_date).fromNow()}</Text>
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </>}
         </ScrollView>
     )
 }

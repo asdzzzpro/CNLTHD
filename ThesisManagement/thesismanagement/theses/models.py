@@ -125,6 +125,9 @@ class Score(BaseModel):
     criteria = models.ForeignKey(Criteria, on_delete=models.RESTRICT, related_name='scores')
     member = models.ForeignKey(Member, on_delete=models.RESTRICT, related_name='scores')
 
+    def __str__(self):
+        return self.thesis.name + ' - ' + ' - ' + self.member.lecturer.last_name + ' ' + self.member.lecturer.first_name + self.criteria.name + ' - '
+
     class Meta:
         unique_together = ('thesis', 'criteria', 'member')
         verbose_name_plural = 'Điểm'

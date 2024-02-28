@@ -48,7 +48,7 @@ class ThesisViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIVi
         s = Score.objects.create(thesis=self.get_object(), member=member, criteria_id=request.data.get('criteria_id'), score=request.data.get('score'))
         s.save()
 
-        return Response(serializers.ScoreSerializer(s).data, status=status.HTTP_201_CREATED)
+        return Response(serializers.ThesisDetailSerializer(s.thesis).data, status=status.HTTP_201_CREATED)
 
     @action(methods=['post'], url_path='committee', detail=True)
     def add_committee(self, request, pk):
@@ -104,27 +104,11 @@ class StudentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     permission_classes = [perms.IsAcademicManagerAuthenticated()]
 
     def get_permissions(self):
-        if self.action in ['change_password']:
-            return [perms.IsStudentOfAuthenticated()]
 
         if self.action in ['retrieve']:
             return [permissions.OR(perms.IsStudentOfAuthenticated(), perms.IsAcademicManagerAuthenticated())]
 
         return self.permission_classes
-
-    @action(methods=['patch'], url_path='change-password', detail=False)
-    def change_password(self, request):
-        password = request.data.get('password')
-        confirm_password = request.data.get('confirm_password')
-
-        if password and confirm_password and password == confirm_password:
-            user = request.user
-            user.set_password(request.data.get('password'))
-            user.save()
-
-            return Response(serializers.StudentDetailSerializer(user.student).data, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class LecturerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
@@ -133,26 +117,10 @@ class LecturerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveA
     permission_classes = [perms.IsAcademicManagerAuthenticated()]
 
     def get_permissions(self):
-        if self.action in ['change_password']:
-            return [perms.IsLecturerOfAuthenticated()]
-
         if self.action in ['retrieve']:
             return [permissions.OR(perms.IsLecturerOfAuthenticated(), perms.IsAcademicManagerAuthenticated())]
 
         return self.permission_classes
-
-    @action(methods=['patch'], url_path='change-password', detail=False)
-    def change_password(self, request):
-        password = request.data.get('password')
-        confirm_password = request.data.get('confirm_password')
-        if password and confirm_password and password == confirm_password:
-            user = request.user
-            user.set_password(request.data.get('password'))
-            user.save()
-
-            return Response(serializers.LecturerDetailSerializer(user.lecturer).data, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class CriteriaViewSet(viewsets.ViewSet,generics.CreateAPIView, generics.ListAPIView):
@@ -175,3 +143,16 @@ class UserViewSet(viewsets.ViewSet):
     @action(methods=['get'], url_path='current-user', url_name='current-user', detail=False)
     def current_user(self, request):
         return Response(serializers.UserDetailSerializer(request.user).data)
+
+    @action(methods=['patch'], url_path='change-password', detail=False)
+    def change_password(self, request):
+        password = request.data.get('password')
+        confirm_password = request.data.get('confirm_password')
+        if password and confirm_password and password == confirm_password:
+            user = request.user
+            user.set_password(request.data.get('password'))
+            user.save()
+
+            return Response(serializers.UserDetailSerializer(user).data, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)

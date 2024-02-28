@@ -7,6 +7,7 @@ import MyContext from "./configs/MyContext";
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './components/User/Login';
 import Home from './components/Home/Home';
+import Thesis from './components/Thesis/Thesis';
 import { createStackNavigator } from '@react-navigation/stack';
 import Profile from './components/User/Profile';
 
@@ -41,6 +42,7 @@ const App = () => {
           </>:<>
             <Drawer.Screen name={user?.fullname} component={Profile}/>
             <Drawer.Screen name='Home' component={Home} options={{ title: 'Trang chủ' }} />
+            <Drawer.Screen name="Thesis" component={Thesis} options={{ title: "Chi tiết khóa luận", drawerItemStyle: {display: "none"}}} />
           </>}
         </Drawer.Navigator>
       </NavigationContainer>

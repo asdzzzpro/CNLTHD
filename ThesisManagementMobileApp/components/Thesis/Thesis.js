@@ -1,30 +1,104 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import MyStyle from "../../styles/MyStyle";
 import Style from "./Style";
+import { useContext, useEffect, useState } from "react";
+import MyContext from "../../configs/MyContext";
+import { authAPI, endpoints } from "../../configs/API";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Thesis = () => {
+const Thesis = ({ route }) => {
+
+    const [thesis, setThesis] = useState(null)
+    const [criteria, setCriteria] = useState(null)
+    const [user,] = useContext(MyContext)
+    const { thesisId } = route.params;
+    const [isShow, setIsShow] = useState(true)
+    const [scores, setScores] = useState(null)
+
+    useEffect(() => {
+        const loadThesis = async () => {
+            try {
+                let accessToken = await AsyncStorage.getItem('access-token')
+                let res = await authAPI(accessToken).get(endpoints['thesis-detail'](thesisId));
+                setThesis(res.data)
+            } catch (ex) {
+                console.error(ex);
+            }
+        }
+        loadThesis();
+
+        const loadCriteria = async () => {
+            try {
+                let accessToken = await AsyncStorage.getItem('access-token')
+                let res = await authAPI(accessToken).get(endpoints['criteria'])
+                setCriteria(res.data)
+            } catch (ex) {
+                console.error(ex)
+            }
+        }
+        loadCriteria();
+    }, [thesisId])
+
+    const show = () => {
+        setIsShow(false)
+    }
+
+    const createForm = (id, value) => {
+        setScores(current => {
+            return {...current, [id-1] : {
+                'criteria_id': id,
+                'score': value
+            }}
+        })
+    }
+
+    const scoring = () => {
+        let index = 0
+        criteria.forEach( async criteria => {
+            try {
+                let accessToken = await AsyncStorage.getItem('access-token')
+                let res = await authAPI(accessToken).post(endpoints['scoring'](thesisId), scores[index++]);
+            
+                setThesis(res.data)
+            } catch (ex) {
+                console.error(ex);
+            }
+        });
+    }
+
     return (
-        <View style={[MyStyle.container, {alignItems: 'flex-start', width: '90%'}]}>
-            <Text style={[Style.title]}>Quản lý nhà sách</Text>
-            <Text style={[Style.item]}>Điểm:</Text>
-            <Text style={[Style.item]}>Sinh viên thực hiện:</Text>
-            <Text style={[Style.item]}>Giảng viên hướng dẫn:</Text>
-            <Text style={[Style.item]}>Hội đồng bảo vệ:</Text>
-            <View style={{alignItems: 'center', width: '100%', marginVertical: 10}}>
-                <TouchableOpacity style={Style.button}>
-                    <Text style={Style.text}>Chấm điểm</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={[MyStyle.elevation, Style.card]}>
-                <Text style={[Style.subject]}>1. Trình bày</Text>
-                <TextInput style={Style.input} placeholder="Nhập điểm"/>
-            </View>
-            <View style={{alignItems: 'center', width: '100%', marginVertical: 10}}>
-                <TouchableOpacity style={Style.button}>
-                    <Text style={Style.text}>Lưu</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+            {thesis === null ? <ActivityIndicator /> : <>
+                <Text style={[Style.title]}>{thesis.name}</Text>
+                <Text style={[Style.item]}>Điểm: {thesis.average}</Text>
+                <Text style={[Style.item]}>Sinh viên thực hiện: {thesis.students.map(student => student.fullname)}</Text>
+                <Text style={[Style.item]}>Giảng viên hướng dẫn: {thesis.lecturers.map(lecturer => lecturer.fullname)}</Text>
+                <Text style={[Style.item]}>Hội đồng bảo vệ: {thesis.committee.name}</Text>
+                <Text style={[Style.item]}>Ngành: {thesis.students[0].major.name}</Text>
+                <Text style={[Style.item]}>Khoa: {thesis.students[0].faculty.name}</Text>
+                <View style={{ alignItems: 'center', width: '100%', marginVertical: 10 }}>
+                    <TouchableOpacity style={[Style.button, { display: isShow ? 'flex' : 'none' }]} onPress={() => { show(); }}>
+                        <Text style={Style.text}>Chấm điểm</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={[MyStyle.container, { width: '90%', display: isShow ? 'none' : 'flex' }]}>
+                    <Text style={Style.title}>Các tiêu chí chấm điểm</Text>
+                    {criteria === null ? <ActivityIndicator /> : <>
+                        {criteria.map(criteria => (
+                            <View style={[MyStyle.elevation, MyStyle.mb_20, Style.card]}>
+                                <Text style={[Style.subject]}>{criteria.name}</Text>
+                                <TextInput style={Style.input} onChangeText={t => createForm(criteria.id, parseFloat(t))} placeholder="Nhập điểm" />
+                            </View>
+                        ))}
+                    </>}
+                    <View style={{ alignItems: 'center', width: '100%', marginVertical: 10 }}>
+                        <TouchableOpacity style={Style.button} onPress={scoring}>
+                            <Text style={Style.text}>Lưu</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </>}
+        </ScrollView>
     )
 }
 

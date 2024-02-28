@@ -6,7 +6,10 @@ const HOST = 'https://ngovanlau.pythonanywhere.com/';
 export const endpoints = {
     'login': '/o/token/',
     'current-user': '/users/current-user',
-    'theses-need-grading': (committee_id) => `/committees/${committee_id}/theses`
+    'theses-need-grading': (committeeId) => `/committees/${committeeId}/theses`,
+    'thesis-detail': (thesisId) => `/theses/${thesisId}`,
+    'criteria': '/criteria/',
+    'scoring': (thesisId) => `/theses/${thesisId}/scores/`
 }
 
 export const authAPI = (accessToken) => axios.create({
