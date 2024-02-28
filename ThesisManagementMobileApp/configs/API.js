@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-const HOST = 'https://ngovanlau.pythonanywhere.com/';
+const HOST = 'https://ngovanlau.pythonanywhere.com';
 
 export const endpoints = {
     'login': '/o/token/',
@@ -9,7 +9,8 @@ export const endpoints = {
     'theses-need-grading': (committeeId) => `/committees/${committeeId}/theses`,
     'thesis-detail': (thesisId) => `/theses/${thesisId}`,
     'criteria': '/criteria/',
-    'scoring': (thesisId) => `/theses/${thesisId}/scores/`
+    'scoring': (thesisId) => `/theses/${thesisId}/scores/`,
+    'change-password': '/users/change-password/'
 }
 
 export const authAPI = (accessToken) => axios.create({

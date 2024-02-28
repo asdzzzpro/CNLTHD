@@ -1,7 +1,5 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { StatusBar } from 'expo-status-bar';
 import React, { useReducer } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import UserReducer from './reducers/UserReducer';
 import MyContext from "./configs/MyContext";
 import { NavigationContainer } from '@react-navigation/native';
