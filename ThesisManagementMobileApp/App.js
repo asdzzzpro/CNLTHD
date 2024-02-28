@@ -8,8 +8,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import Login from './components/User/Login';
 import Home from './components/Home/Home';
 import Thesis from './components/Thesis/Thesis';
+import Profile from './components/User/Profile'
 import { createStackNavigator } from '@react-navigation/stack';
-import Profile from './components/User/Profile';
+import Logout from './components/User/Logout';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator()
@@ -27,7 +28,7 @@ const App = () => {
   return (
     <MyContext.Provider value={[user, dispatch]}>
       <NavigationContainer >
-        <Drawer.Navigator initialRouteName='Login'>
+        <Drawer.Navigator initialRouteName='Login' screenOptions={{headerRight: Logout}}>
           {user===null?<>
             <Drawer.Screen name='Login' component={Login}
             options=
@@ -43,6 +44,7 @@ const App = () => {
             <Drawer.Screen name={user?.fullname} component={Profile}/>
             <Drawer.Screen name='Home' component={Home} options={{ title: 'Trang chủ' }} />
             <Drawer.Screen name="Thesis" component={Thesis} options={{ title: "Chi tiết khóa luận", drawerItemStyle: {display: "none"}}} />
+            <Drawer.Screen name='Profile' component={Profile} options={{ title: 'Thông tin cá nhân', drawerItemStyle: {display: "none"}}} />
           </>}
         </Drawer.Navigator>
       </NavigationContainer>
