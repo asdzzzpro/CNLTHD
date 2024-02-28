@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
 import { useContext, useState } from "react";
@@ -33,7 +33,14 @@ const Login = ({navigation}) => {
             
             navigation.navigate('Home')
         } catch (ex) {
-            console.error(ex)
+            Alert.alert(
+                'Xác nhận',
+                'Không tìm thấy thông tin tài khoản!',
+                [
+                    {text: 'OK', onPress: () => console.log('OK')}
+                ],
+                {cancelable: true}
+            )
         } finally {
             setLoading(false)
         }
