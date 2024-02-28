@@ -9,41 +9,44 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = () => {
 
-    const [theses, setTheses] = useState();
-    const [user, ] = useContext(MyContext);
+    const [theses, setTheses] = useState([]);
+    const [user,] = useContext(MyContext);
 
     useEffect(() => {
-        let theses = [];
 
-        user?.committees.forEach(committee => {
+        if (user.role === 'lecturer') {
+            let theses = [];
 
-            const loadThesis = async () => {
-                let accessToken = await AsyncStorage.getItem("access-token")
-                let res = await authAPI(accessToken).get(endpoints['theses-need-grading'](committee.id))
+            user?.committees.forEach(committee => {
 
-                if (res.data.length !== 0) {
-                    console.info(res.data)
-                    theses.map(res.data)
+                const loadThesis = async () => {
+                    let accessToken = await AsyncStorage.getItem("access-token")
+                    let res = await authAPI(accessToken).get(endpoints['theses-need-grading'](committee.id))
+
+                    if (res.data.length !== 0) {
+                        console.info(res.data)
+                        theses.concat(res.data)
+                        setTheses(theses)
+                    }
                 }
-            }
 
-            loadThesis();
-        });
-
-        setTheses(theses)
+                loadThesis();
+            });
+        }
 
     }, [])
 
-    console.info(theses)
+    
 
     return (
-        <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
             <View style={[MyStyle.elevation, Style.card, MyStyle.mb_20]}>
                 <View style={[MyStyle.row, MyStyle.between]}>
                     <Text style={[Style.title]}>Quản lý khách sản</Text>
                     <Text style={[MyStyle.elevation, Style.score]}>9.0</Text>
                 </View>
                 <Text style={[MyStyle.f_16]}>SV:</Text>
+                <Text></Text>
                 <Text style={[MyStyle.f_16]}>GVHD:</Text>
                 <Text style={[MyStyle.f_16]}>Hội đồng:</Text>
                 <Text style={[MyStyle.f_16]}>Ngày tạo:</Text>
