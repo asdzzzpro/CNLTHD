@@ -33,4 +33,14 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
     },
+    small_title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#2e5fa5',
+        marginBottom: 40
+    },
+    item:{
+        fontWeight: 'bold',
+        fontSize: 16,
+    }
 });
