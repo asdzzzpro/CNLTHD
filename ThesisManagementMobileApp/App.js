@@ -9,6 +9,7 @@ import Thesis from './components/Thesis/Thesis';
 import Profile from './components/User/Profile'
 import { createStackNavigator } from '@react-navigation/stack';
 import Logout from './components/User/Logout';
+import AddThesis from './components/Thesis/AddThesis';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator()
@@ -50,6 +51,9 @@ const App = () => {
             <Drawer.Screen name='Home' component={Home} options={{ title: 'Trang chủ' }} />
             <Drawer.Screen name="Thesis" component={Thesis} options={{ title: "Chi tiết khóa luận", drawerItemStyle: {display: "none"}}} />
             <Drawer.Screen name='Profile' component={Profile} options={{ title: 'Thông tin cá nhân', drawerItemStyle: {display: "none"}}} />
+            {user.role === 'academic_manager'?<>
+            <Drawer.Screen name='AddThesis' component={AddThesis} options={{ title: 'Thêm khóa luận', drawerItemStyle: {display: "none"}}} />
+            </>:<></>}
           </>}
         </Drawer.Navigator>
       </NavigationContainer>
