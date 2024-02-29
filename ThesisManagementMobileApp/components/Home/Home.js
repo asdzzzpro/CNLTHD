@@ -10,33 +10,63 @@ import moment from "moment";
 
 const Home = ({ navigation }) => {
 
-    const [theses, setTheses] = useState(null);
-    const [user,] = useContext(MyContext);
+    const [theses, setTheses] = useState(null)
+    const [user,] = useContext(MyContext)
 
     useEffect(() => {
-        let lecturerTheses = [];
+        console.info(user.role)
 
-        const loadThesis = async (committee) => {
-            try {
-                let accessToken = await AsyncStorage.getItem('access-token')
-
-                let res = await authAPI(accessToken).get(endpoints['theses-need-grading'](committee.id))
-
-                let data = res.data
-
-                if (data.length !== 0) {
-                    lecturerTheses = lecturerTheses.concat(res.data)
-                    setTheses(lecturerTheses)
+        switch (user.role) {
+            case 'academic_manager':
+                const loadTheses = async () => {
+                    try {
+                        let accessToken = await AsyncStorage.getItem('access-token')
+                        let res = await authAPI(accessToken).get(endpoints['theses'])
+                        setTheses(res.data)
+                    } catch (ex) {
+                        console.error(ex);
+                    }
                 }
-            } catch (ex) {
-                console.error
-            }
+
+                loadTheses()
+                break
+            case 'lecturer':
+                let lecturerTheses = [];
+
+                user?.committees.forEach(committee => {
+                    const loadTheses = async () => {
+                        try {
+                            let accessToken = await AsyncStorage.getItem('access-token')
+                            let res = await authAPI(accessToken).get(endpoints['theses-need-grading'](committee.id))
+                            let data = res.data
+    
+                            if (data.length !== 0) {
+                                lecturerTheses = lecturerTheses.concat(res.data)
+                                setTheses(lecturerTheses)
+                            }
+                        } catch (ex) {
+                            console.error
+                        }
+                    }
+                    
+                    loadTheses();
+                });
+                break
+            case 'student':
+                const loadThesis = async () => {
+                    try {
+                        let accessToken = await AsyncStorage.getItem('access-token')
+                        let res = await authAPI(accessToken).get(endpoints['thesis-of-student'])
+                        setTheses(() => [].concat(res.data))
+                    } catch (ex) {
+                        console.error(ex);
+                    }
+                }
+
+                loadThesis()
+                break
+
         }
-
-        user?.committees.forEach(committee => {
-            loadThesis(committee);
-        });
-
     }, [navigation])
 
     const thesisDetail = (thesisId) => {
@@ -44,7 +74,7 @@ const Home = ({ navigation }) => {
     }
 
     return (
-        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', marginTop: 20}}>
             {theses === null ? <ActivityIndicator /> : <>
                 {theses.map(thesis => (
                     <TouchableOpacity onPress={() => thesisDetail(thesis.id)}>

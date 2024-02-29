@@ -10,7 +10,9 @@ export const endpoints = {
     'thesis-detail': (thesisId) => `/theses/${thesisId}`,
     'criteria': '/criteria/',
     'scoring': (thesisId) => `/theses/${thesisId}/scores/`,
-    'change-password': '/users/change-password/'
+    'change-password': '/users/change-password/',
+    'theses': '/theses/',
+    'thesis-of-student': '/students/thesis'
 }
 
 export const authAPI = (accessToken) => axios.create({

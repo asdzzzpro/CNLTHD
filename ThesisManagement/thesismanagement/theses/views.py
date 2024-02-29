@@ -110,6 +110,13 @@ class StudentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
 
         return self.permission_classes
 
+    @action(methods=['get'], url_path='thesis', detail=False)
+    def get_thesis(self, request):
+        student = request.user.student
+
+        return Response(serializers.ThesisDetailSerializer(student.thesis, many=True, context={'request': request}).data, status=status.HTTP_200_OK)
+
+
 
 class LecturerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Lecturer.objects.filter(is_active=True).all()

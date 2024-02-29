@@ -215,9 +215,10 @@ class ThesisDetailSerializer(serializers.ModelSerializer):
 
     def get_average(self, thesis):
         average = 0.0
+        criteria_count = Criteria.objects.count()
         for score in thesis.scores.all():
             average = average + score.score
-        average = float(average / thesis.committee.members.all().count())
+        average = float(average / (criteria_count * thesis.committee.members.all().count()))
 
         return round(average, 2)
 

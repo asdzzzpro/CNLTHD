@@ -26,7 +26,14 @@ const App = () => {
   return (
     <MyContext.Provider value={[user, dispatch]}>
       <NavigationContainer >
-        <Drawer.Navigator initialRouteName='Login' screenOptions={{headerRight: Logout}}>
+        <Drawer.Navigator initialRouteName='Login' screenOptions={({route}) => ({
+          headerRight: () => {
+            if (route.name === 'Login') {
+              return null
+            }
+            return <Logout/>
+          }
+        })}>
           {user===null?<>
             <Drawer.Screen name='Login' component={Login}
             options=

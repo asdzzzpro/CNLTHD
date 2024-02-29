@@ -10,7 +10,6 @@ const Logout = () =>{
         })
     }
 
-
     return <Button title="Đăng xuất" onPress={logout} />
 }
 
