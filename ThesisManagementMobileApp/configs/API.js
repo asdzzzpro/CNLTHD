@@ -12,7 +12,10 @@ export const endpoints = {
     'scoring': (thesisId) => `/theses/${thesisId}/scores/`,
     'change-password': '/users/change-password/',
     'theses': '/theses/',
-    'thesis-of-student': '/students/thesis'
+    'thesis-of-student': '/students/thesis',
+    'committees': '/committees/',
+    'committee-detail': (committeeId) => `/committees/${committeeId}/`,
+    'lecturers': '/lecturers/'
 }
 
 export const authAPI = (accessToken) => axios.create({
