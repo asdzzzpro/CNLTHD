@@ -42,5 +42,8 @@ export default StyleSheet.create({
     item:{
         fontWeight: 'bold',
         fontSize: 16,
+    },
+    picker: {
+        zIndex: 100
     }
 });

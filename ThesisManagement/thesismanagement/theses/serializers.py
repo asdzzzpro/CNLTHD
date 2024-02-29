@@ -1,5 +1,3 @@
-import cloudinary
-
 from .models import *
 from rest_framework import serializers
 
@@ -106,9 +104,21 @@ class LecturerDetailSerializer(LecturerSerializer):
         }
 
 
+class CommitteeIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Committee
+        fields = ['id']
+        extra_kwargs = {
+            'id': {
+                'read_only': False
+            },
+        }
+
+
 class ThesisSerializer(serializers.ModelSerializer):
     students = StudentSerializer(many=True)
     lecturers = LecturerSerializer(many=True)
+    committee = CommitteeIdSerializer()
 
     def create(self, validated_data):
         data = validated_data.copy()
@@ -123,13 +133,15 @@ class ThesisSerializer(serializers.ModelSerializer):
             lec = Lecturer.objects.get(user_ptr_id=lecturer['id'])
             t.lecturers.add(lec)
 
+        t.committee_id = data['committee']['id']
+
         t.save()
 
         return t
 
     class Meta:
         model = Thesis
-        fields = ['name', 'students', 'lecturers']
+        fields = ['id', 'name', 'students', 'lecturers', 'committee']
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -215,12 +227,17 @@ class ThesisDetailSerializer(serializers.ModelSerializer):
 
     def get_average(self, thesis):
         average = 0.0
-        criteria_count = Criteria.objects.count()
-        for score in thesis.scores.all():
-            average = average + score.score
-        average = float(average / (criteria_count * thesis.committee.members.all().count()))
+        if thesis.commitee:
+            criteria_count = Criteria.objects.count()
 
-        return round(average, 2)
+            for score in thesis.scores.all():
+                average = average + score.score
+
+            average = float(average / (criteria_count * thesis.committee.members.all().count()))
+
+            return round(average, 2)
+
+        return average
 
     class Meta:
         model = Thesis

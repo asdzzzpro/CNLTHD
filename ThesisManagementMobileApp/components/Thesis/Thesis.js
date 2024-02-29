@@ -77,7 +77,7 @@ const Thesis = ({ route }) => {
                 <Text style={[Style.item]}>Điểm: {thesis.average}</Text>
                 <Text style={[Style.item]}>Sinh viên thực hiện: {thesis.students.map(student => student.fullname)}</Text>
                 <Text style={[Style.item]}>Giảng viên hướng dẫn: {thesis.lecturers.map(lecturer => lecturer.fullname)}</Text>
-                <Text style={[Style.item]}>Hội đồng bảo vệ: {thesis.committee.name}</Text>
+                <Text style={[Style.item]}>Hội đồng bảo vệ: {thesis.committee?thesis.committee.name:'Chưa thêm hội đồng'}</Text>
                 <Text style={[Style.item]}>Ngành: {thesis.students[0].major.name}</Text>
                 <Text style={[Style.item]}>Khoa: {thesis.students[0].faculty.name}</Text>
 

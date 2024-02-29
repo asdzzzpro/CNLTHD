@@ -91,7 +91,7 @@ class Member(BaseModel):
     lecturer = models.ForeignKey(Lecturer, on_delete=models.RESTRICT, related_name='members')
 
     class Meta:
-        unique_together = ('role', 'committee')
+        unique_together = ('role', 'committee', 'lecturer')
         verbose_name_plural = 'Thành viên'
 
 

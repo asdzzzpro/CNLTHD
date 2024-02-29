@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const HOST = 'https://ngovanlau.pythonanywhere.com';
@@ -16,7 +15,8 @@ export const endpoints = {
     'students': '/students/',
     'lecturers': '/lecturers/',
     'committees': '/committees/',
-    'add-committee-to-thesis': (thesisId) => `/theses/${thesisId}/committee`
+    'add-committee-to-thesis': (thesisId) => `/theses/${thesisId}/committee`,
+    'committee-detail': (committeeId) => `/committees/${committeeId}/`,
 }
 
 export const authAPI = (accessToken) => axios.create({

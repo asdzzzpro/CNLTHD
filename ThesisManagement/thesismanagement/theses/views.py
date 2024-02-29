@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -33,11 +34,17 @@ class ThesisViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIVi
 
         student_count = len(data.get('students'))
         if student_count < configs.MIN_STUDENT or student_count > configs.MAX_STUDENT:
-            return Response({"message": "Khóa luận chỉ được thực hiện    bởi 1 đển 2 sinh viên"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Khóa luận chỉ được thực hiện bởi 1 đển 2 sinh viên"}, status=status.HTTP_400_BAD_REQUEST)
 
         lecturer_count = len(data.get('lecturers'))
         if lecturer_count < configs.MIN_LECTURER or lecturer_count > configs.MAX_LECTURER:
             return Response({"message": "Khóa luận chỉ được hướng dẫn bởi 1 đển 2 giảng viên"}, status=status.HTTP_400_BAD_REQUEST)
+
+        committee_id = data.get('committee').get('id')
+
+        committee = Committee.objects.get(id=committee_id)
+        if committee.theses.count() >= configs.MAX_THESIS:
+            return Response({"message": "Hội đồng đã chấm tối đa 5 khóa luận"}, status=status.HTTP_400_BAD_REQUEST)
 
         return super().create(request, *args, **kwargs)
 
@@ -49,6 +56,15 @@ class ThesisViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIVi
         s.save()
 
         return Response(serializers.ThesisDetailSerializer(s.thesis).data, status=status.HTTP_201_CREATED)
+
+    @action(methods=['patch'], url_path='active', detail=True)
+    def update_active(self, request, pk):
+        thesis = self.get_object()
+        is_active = thesis.active
+        thesis.active = False
+        thesis.updated_date = datetime.now()
+
+        return Response(serializers.ThesisDetailSerializer(thesis).data, status=status.HTTP_200_OK)
 
     @action(methods=['post'], url_path='committee', detail=True)
     def add_committee(self, request, pk):

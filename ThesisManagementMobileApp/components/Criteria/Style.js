@@ -1,25 +1,17 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
+    text:{
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
     card: {
         width: '90%',
         backgroundColor: 'white',
         borderRadius: 20,
         paddingHorizontal: 24,
-        paddingVertical: 16
-    },
-    title: {
-        width: '80%',
-        fontSize: 24
-    },
-    score: {
-        width: '20%',
-        paddingVertical: 10,
-        backgroundColor: 'white', 
-        borderRadius: 10,
-        fontWeight: 'bold',
-        fontSize: 24,
-        textAlign: 'center',
+        paddingVertical: 16,
+        marginTop: 10
     },
     button: {
         backgroundColor: '#2196f3',
@@ -29,9 +21,15 @@ export default StyleSheet.create({
         width: '100%',
         alignItems: 'center'
     },
-    text: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 16,
+    input: {
+        width: '90%',
+        paddingVertical: 14,
+        paddingHorizontal: 24,
+        marginBottom: 10,
+        borderRadius: 5,
+        fontSize: 20,
+        backgroundColor: 'white',
+        elevation: 5,
+        shadowColor: 'black',
     },
 })

@@ -105,7 +105,6 @@ cloudinary.config(
     cloud_name="dlqybjdte",
     api_key="129526211846497",
     api_secret="5dIF5mGFoQmlmI5pYTMnIYjjkqA",
-    api_proxy='http://proxy.server:3128'
 )
 
 MEDIA_ROOT = '%s/theses/static/' % BASE_DIR

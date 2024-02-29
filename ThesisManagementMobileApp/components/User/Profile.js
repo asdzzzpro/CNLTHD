@@ -17,7 +17,7 @@ const Profile = ({ navigation }) => {
     const [theses, setTheses] = useState([]);
     const [isHidden, setIsHidden] = useState(true);
 
-    useEffect(() => {
+    useEffect(() => {   
 
         const loadUser = async () => {
             let accessToken = await AsyncStorage.getItem("access-token")
@@ -90,7 +90,7 @@ const Profile = ({ navigation }) => {
         <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', padding: 20}}>
             <View style={[MyStyle.container, {width: '100%'}]}>
                 <View style={[Style.container, {width: '100%'}]}>
-
+                    <Text>{user.id}</Text>
                     <Text style={[Style.small_title]}>Thông Tin Tài Khoản:</Text>
                     <Image
                         source={{ uri: user.avatar }}
@@ -102,9 +102,8 @@ const Profile = ({ navigation }) => {
                     <TouchableOpacity onPress={toggleVisibility} style={[Style.button, MyStyle.mb_20, {display: isHidden?'flex':'none', width: '50%'}]}>
                         <Text style={Style.text}>Đổi mật khẩu</Text>
                     </TouchableOpacity>
-
-
                 </View>
+
                 <View style={{ display: isHidden ? 'none' : 'flex', width: '100%'}}>
                     <TextInput value={pass.password} onChangeText={t => change("password", t)} secureTextEntry={true} placeholder="Nhập mật khẩu mới" style={[Style.input, MyStyle.mb_20, {width:'100%'}]} />
                     <TextInput value={pass.confirm_password} onChangeText={t => change("confirm_password", t)} secureTextEntry={true} style={[Style.input, MyStyle.mb_20, {width:'100%'}]} placeholder="Nhập lại mật khẩu mới" />
