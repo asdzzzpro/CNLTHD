@@ -9,13 +9,17 @@ import Thesis from './components/Thesis/Thesis';
 import Profile from './components/User/Profile'
 import { createStackNavigator } from '@react-navigation/stack';
 import Logout from './components/User/Logout';
+import Committees from './components/Commitees/Commitees';
+import CommiteesDetail from './components/Commitees/CommiteesDetail';
+import AddCommittees from './components/Commitees/AddCommittees';
+import Criteria from './components/Criteria/Criteria';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator()
 
 const HomeStack = () => {
   <Stack.Navigator initialRouteName='Home'>
-    
+
   </Stack.Navigator>
 }
 
@@ -26,30 +30,38 @@ const App = () => {
   return (
     <MyContext.Provider value={[user, dispatch]}>
       <NavigationContainer >
-        <Drawer.Navigator initialRouteName='Login' screenOptions={({route}) => ({
+        <Drawer.Navigator initialRouteName='Login' screenOptions={({ route }) => ({
           headerRight: () => {
             if (route.name === 'Login') {
               return null
             }
-            return <Logout/>
+            return <Logout />
           }
         })}>
-          {user===null?<>
+          {user === null ? <>
             <Drawer.Screen name='Login' component={Login}
-            options=
-            {
+              options=
               {
-                title: 'Đăng nhập',
-                headerStyle: {
-                  backgroundColor: '#afeeee',
-                },
-              }
-            } />
-          </>:<>
-            <Drawer.Screen name={user?.fullname} component={Profile}/>
+                {
+                  title: 'Đăng nhập',
+                  headerStyle: {
+                    backgroundColor: '#afeeee',
+                  },
+                }
+              } />
+          </> : <>
+            <Drawer.Screen name={user?.fullname} component={Profile} />
             <Drawer.Screen name='Home' component={Home} options={{ title: 'Trang chủ' }} />
-            <Drawer.Screen name="Thesis" component={Thesis} options={{ title: "Chi tiết khóa luận", drawerItemStyle: {display: "none"}}} />
-            <Drawer.Screen name='Profile' component={Profile} options={{ title: 'Thông tin cá nhân', drawerItemStyle: {display: "none"}}} />
+            <Drawer.Screen name="Thesis" component={Thesis} options={{ title: "Chi tiết khóa luận", drawerItemStyle: { display: "none" } }} />
+            <Drawer.Screen name='Profile' component={Profile} options={{ title: 'Thông tin cá nhân', drawerItemStyle: { display: "none" } }} />
+            {/* sua lai api + role */}
+            {user.role === 'academic_manager' ? <>
+              <Drawer.Screen name='Committees' component={Committees} options={{ title: 'Hội đồng' }} />
+              <Drawer.Screen name="CommitteesDetail" component={CommiteesDetail} options={{ title: "Chi tiết Hội đồng", drawerItemStyle: { display: "none" } }} />
+              <Drawer.Screen name='AddCommittees' component={AddCommittees} options={{ title: 'Thêm hội đồng mới', drawerItemStyle: { display: "none" } }} />
+              <Drawer.Screen name='Criteria' component={Criteria} options={{ title: 'Các Tiêu Chí' }} />
+            </> : <></>}
+            
           </>}
         </Drawer.Navigator>
       </NavigationContainer>
