@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { authAPI, endpoints } from "../../configs/API";
 import Style from "./Style";
@@ -32,6 +32,7 @@ const AddCommittees = () => {
     const [items4, setItems4] = useState([[]]);
 
     const [isHidden, setIsHidden] = useState(true);
+    // const [memberCount, setMemberCount] = useState(1);
 
     useEffect(() => {
 
@@ -70,17 +71,38 @@ const AddCommittees = () => {
                     { lecturer: { id: value }, role: "chairman" },
                     { lecturer: { id: value1 }, role: "secretary" },
                     { lecturer: { id: value2 }, role: "critical_lecturer" },
-                    { lecturer: { id: value3 }, role: "member" },
-                    //lỗi 2 thành viên
-                    // { lecturer: { id: value4 }, role: "member" },
+                    
                 ]
             };
+            if(value3){
+                data.members.push(
+                    { lecturer: { id: value3 }, role: "member" },)
+            }
+
+            if(value4){
+                data.members.push(
+                    { lecturer: { id: value4 }, role: "member" },)
+            }
 
             let res = await authAPI(accessToken).post(endpoints['committees'], data);
-
-            console.info(res.data);
+            
+            Alert.alert(
+                'Hoàn tất',
+                'Thay đổi thành công!',
+                [
+                    { text: 'OK', onPress: () => console.log('OK') }
+                ],
+                { cancelable: true }
+            )
         } catch (error) {
-            console.error(error);
+            Alert.alert(
+                'Lỗi',
+                'Đã xảy ra lỗi!',
+                [
+                    { text: 'OK', onPress: () => console.log('error') }
+                ],
+                { cancelable: true }
+            )
         }
     };
 
@@ -122,8 +144,10 @@ const AddCommittees = () => {
             <View style={{ display: isHidden ? 'none' : 'flex', width: '100%' }}>
                 <Text style={Style.text}>Thành viên 1:</Text>
                 <DropDownPicker style={[MyStyle.elevation, Style.picker, MyStyle.mb_20]} placeholder={'Chọn thành viên...'} open={open3} value={value3} items={items3} setOpen={setOpen3} setValue={setValue3} setItems={setItems3} />
+                
                 <Text style={Style.text}>Thành viên 2:</Text>
                 <DropDownPicker style={[MyStyle.elevation, Style.picker, MyStyle.mb_20]} placeholder={'Chọn thành viên...'} open={open4} value={value4} items={items4} setOpen={setOpen4} setValue={setValue4} setItems={setItems4} />
+                
 
                 <View style={[MyStyle.mb_20, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                     <TouchableOpacity style={[Style.button, MyStyle.mb_20, { width: '45%', backgroundColor: 'orange' }]} onPress={toggleVisibility}>
