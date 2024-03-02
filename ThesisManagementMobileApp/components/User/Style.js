@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+    import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     bg: {
@@ -41,8 +41,8 @@ export default StyleSheet.create({
     },
     item:{
         fontWeight: 'bold',
-        fontSize: 24,
-        marginBottom: 10
+        fontSize: 20,
+        marginBottom: 5
     },
     
 });
