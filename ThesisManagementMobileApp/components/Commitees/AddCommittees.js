@@ -107,7 +107,7 @@ const AddCommittees = () => {
         <View style={{ padding: 20 }}>
             <Text style={Style.text}>Tên hội đồng:</Text>
             <TextInput style={[Style.input]} value={name} onChangeText={t => handleNameChange(t)} />
-            <View >
+            <View key='1'>
                 <Text style={Style.text}>Chủ tịch:</Text>
                 <DropDownPicker style={[MyStyle.elevation, Style.picker, MyStyle.mb_20]} placeholder={'Chọn thành viên...'} open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} />
                 <Text style={Style.text}>Thư ký:</Text>

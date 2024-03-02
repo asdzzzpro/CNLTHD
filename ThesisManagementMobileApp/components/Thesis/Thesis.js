@@ -19,6 +19,11 @@ const Thesis = ({ route }) => {
     const [isScores, setIsScores] = useState([])
     const [changeScores, setChangeScores] = useState([])
     const [getScore, setGetScore] = useState([])
+    const [refresh, setRefresh] = useState(false)
+
+    const handleReload = () => {
+        setRefresh((prevRefresh) => !prevRefresh);
+    }
 
     useEffect(() => {
         setIsShow(true)
@@ -33,7 +38,7 @@ const Thesis = ({ route }) => {
         }
         loadThesis();
 
-        if (user.role === 'lecturer') {
+        if (user.role === 'lecturer' || user.role === 'academic_manager') {
             const loadCriteria = async () => {
                 try {
                     let accessToken = await AsyncStorage.getItem('access-token')
@@ -44,7 +49,9 @@ const Thesis = ({ route }) => {
                 }
             }
             loadCriteria();
+        }
 
+        if (user.role === 'lecturer') {
             const LoadScores = async () => {
                 try {
                     let accessToken = await AsyncStorage.getItem('access-token')
@@ -57,7 +64,7 @@ const Thesis = ({ route }) => {
             }
             LoadScores()
         }
-    }, [thesisId])
+    }, [thesisId, refresh])
 
     const show = () => {
         setIsShow(!isShow)
@@ -88,6 +95,7 @@ const Thesis = ({ route }) => {
 
         setScores([])
         setIsShow(true)
+        handleReload()
     }
 
     const test = () => {
@@ -130,7 +138,7 @@ const Thesis = ({ route }) => {
                     let accessToken = await AsyncStorage.getItem('access-token')
                     let res = await authAPI(accessToken).patch(endpoints['scoring'](thesisId), score)
 
-                    setThesis(res.data)
+                    console.info(res.data)
                 } catch (ex) {
                     console.error(ex);
                 }
@@ -139,19 +147,31 @@ const Thesis = ({ route }) => {
         }
         setChangeScores([])
         setIsShow(true)
+        handleReload()
     }
 
     const getScores = async (memberId, thesisId) => {
-        console.info(memberId)
-        console.info(thesisId)
         try {
             let accessToken = await AsyncStorage.getItem('access-token')
             let res = await authAPI(accessToken).get(endpoints['get-scores'](memberId, thesisId))
 
             setGetScore(res.data)
+            // getScores(member.id, thesis.id)}
+            //                 ${getScore.map(score =>
+            //                     `<tr><td>${score.criteria.name}</td><td>${score.score}</td></tr>`
+            //                 ).join().replaceAll(",", "")
         } catch (ex) {
             console.error(ex)
         }
+    }
+
+    const average = (lecturer_id) => {
+        let average = 0.0
+        thesis.scores.filter(score => score.lecturer_id === lecturer_id)
+        .forEach(score => average += score.score)
+        average = average / criteria.length
+        
+        return average
     }
 
     const toPDF = async () => {
@@ -215,8 +235,8 @@ const Thesis = ({ route }) => {
             <h2>Hội đồng chấm: ${thesis.committee.name}</h2>
             <h2>Điểm trung bình: ${thesis.average}</h2>
             <h2 class='center-tittle'>ĐIỂM TỪNG GIẢNG VIÊN TRONG HỘI ĐỒNG</h1>
-            ${thesis.committee.members.map(member => 
-                `<h2>${member.role}: ${member.lecturer.fullname}</h2>
+            ${thesis.committee.members.map(member =>
+            `<h2>${member.role}: ${member.lecturer.fullname}</h2>
                 <div class="center-table">
                     <table>
                         <thead>
@@ -227,17 +247,20 @@ const Thesis = ({ route }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            ${getScores(member.id, thesis.id)}
-                            ${getScore.map(score => 
-                                `<tr>
-                                    <td>${score.criteria.name}</td>
-                                    <td>${score.score}</td>
-                                </tr>`
-                            )}
+                            ${thesis.scores.filter(score => score.lecturer_id === member.lecturer.id)
+                                .map(score =>`<tr><td>${score.criteria.name}</td><td>${score.score}</td></tr>`)
+                                .join().replaceAll(",", "")
+                            }
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Điểm trung bình</th>
+                                <th>${average(member.lecturer.id)}</th>
+                            </tr>
+                        </tfoot>
                     </table>
-                </div>`    
-            )}
+                </div>`
+        )}
         </body>
         </html>
         `
@@ -248,7 +271,7 @@ const Thesis = ({ route }) => {
 
         await shareAsync(file.uri)
     }
-    console.info(thesis.members)
+
     return (
         <ScrollView contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 16 }}>
             {thesis === null ? <ActivityIndicator /> : <>
@@ -286,7 +309,7 @@ const Thesis = ({ route }) => {
                                     <TouchableOpacity style={[Style.button, { width: '45%' }]} onPress={scoring}>
                                         <Text style={Style.text}>Lưu</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={[Style.button, { width: '45%', backgroundColor: 'orange' }]} onPress={toPDF}>
+                                    <TouchableOpacity style={[Style.button, { width: '45%', backgroundColor: 'orange' }]} onPress={() => show()}>
                                         <Text style={Style.text}>Hủy</Text>
                                     </TouchableOpacity>
                                 </View>

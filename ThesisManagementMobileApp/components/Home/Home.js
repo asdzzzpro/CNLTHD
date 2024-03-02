@@ -81,7 +81,7 @@ const Home = ({ navigation }) => {
                 <ScrollView contentContainerStyle={{ alignItems: 'center', marginTop: 20, paddingBottom: 20}}>
                     {theses === null ? <ActivityIndicator /> : <>
                         {theses.map(thesis => (
-                            <TouchableOpacity onPress={() => thesisDetail(thesis.id)}>
+                            <TouchableOpacity key={thesis.id} onPress={() => thesisDetail(thesis.id)}>
                                 <View style={[MyStyle.elevation, Style.card, MyStyle.mb_20]} >
                                     <View style={[MyStyle.row, MyStyle.between]}>
                                         <Text style={[Style.title]}>{thesis.name}</Text>

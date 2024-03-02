@@ -41,7 +41,7 @@ export default StyleSheet.create({
     },
     item:{
         fontWeight: 'bold',
-        fontSize: 24,
+        fontSize: 18,
         marginBottom: 10
     },
     

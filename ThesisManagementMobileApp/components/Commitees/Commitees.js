@@ -57,8 +57,7 @@ const Committees = ({ navigation }) => {
                 <ScrollView contentContainerStyle={{ alignItems: 'center', marginTop: 20, paddingBottom: 10 }}>
                     {committees === null ? <ActivityIndicator /> : <>
                         {committees.map(committee => (
-
-                            <TouchableOpacity onPress={() => detail(committee)} style={[Style.card, MyStyle.mb_20, MyStyle.row, { justifyContent: 'space-between' }]}>
+                            <TouchableOpacity key={committee.id} onPress={() => detail(committee)} style={[Style.card, MyStyle.mb_20, MyStyle.row, { justifyContent: 'space-between' }]}>
                                 <View>
                                     <Text style={[Style.text]}>{committee.name}</Text>
                                     <Text style={[Style.item]}>Thành viên:</Text>
@@ -69,13 +68,13 @@ const Committees = ({ navigation }) => {
                                     ))}
                                 </View>
                                 {committee.active ? <>
-                                    <View style={{ width: '30%', justifyContent: 'center' }}>
+                                    <View style={{ width: '40%', justifyContent: 'center' }}>
                                         <TouchableOpacity style={[Style.button, { backgroundColor: 'red' }]} onPress={() => close(committee.id)}>
                                             <Text style={[Style.text, { color: 'white' }]}>Đóng</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </> : <>
-                                    <View style={{ width: '30%', justifyContent: 'center' }}>
+                                    <View style={{ width: '40%', justifyContent: 'center' }}>
                                         <TouchableOpacity style={[Style.button, { backgroundColor: 'green' }]} onPress={() => close(committee.id)}>
                                             <Text style={[Style.text, { color: 'white' }]}>Mở</Text>
                                         </TouchableOpacity>

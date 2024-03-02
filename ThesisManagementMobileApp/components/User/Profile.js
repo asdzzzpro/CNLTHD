@@ -18,7 +18,6 @@ const Profile = ({ navigation }) => {
     const [isHidden, setIsHidden] = useState(true);
 
     useEffect(() => {
-
         const loadUser = async () => {
             let accessToken = await AsyncStorage.getItem("access-token")
             let res = await authAPI(accessToken).get(endpoints['/users/current-user'])
@@ -95,7 +94,7 @@ const Profile = ({ navigation }) => {
                         style={{ width: 200, height: 200, borderRadius: 100 }}
                     />
 
-                    <View style={{alignItems: 'flex-start', width: '100%', marginVertical: 20}}>
+                    <View style={{alignItems: 'flex-start', width: '100%', marginTop: 20}}>
                         <Text style={[Style.item]}>Tên: {user.fullname}</Text>
                         <Text style={[Style.item]}>Username: {user.username}</Text>
                         <Text style={[Style.item]}>Email: {user.email}</Text>
@@ -114,7 +113,7 @@ const Profile = ({ navigation }) => {
                     <View style={{ width: '100%' }}>
                         <TextInput value={pass.password} onChangeText={t => change("password", t)} secureTextEntry={true} placeholder="Nhập mật khẩu mới" style={[Style.input, MyStyle.mb_20, { width: '100%' }]} />
                         <TextInput value={pass.confirm_password} onChangeText={t => change("confirm_password", t)} secureTextEntry={true} style={[Style.input, MyStyle.mb_20, { width: '100%' }]} placeholder="Nhập lại mật khẩu mới" />
-                        <View style={[MyStyle.row, { alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 }]}>
+                        <View style={[MyStyle.row, { alignItems: 'center', justifyContent: 'space-between'}]}>
                             <TouchableOpacity onPress={() => changePassword(navigation)} style={[Style.button, { width: '45%' }]}>
                                 <Text style={Style.text}>Xác nhận</Text>
                             </TouchableOpacity>

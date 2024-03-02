@@ -76,7 +76,7 @@ const Criteria = () => {
                 <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
                     {criteria === null ? <ActivityIndicator /> : <>
                         {criteria.map(criteria => (
-                            <Text style={[MyStyle.mb_20, Style.subject, Style.card]}>Tiêu Chí {criteria.id}: {criteria.name}</Text>
+                            <Text key={criteria.id} style={[MyStyle.mb_20, MyStyle.elevation, Style.subject, Style.card]}>Tiêu Chí {criteria.id}: {criteria.name}</Text>
                         ))}
                     </>}
                 </ScrollView>

@@ -168,7 +168,7 @@ class MemberDetailSerializer(MemberSerializer):
 
     class Meta:
         model = MemberSerializer.Meta.model
-        fields = MemberSerializer.Meta.fields
+        fields = MemberSerializer.Meta.fields + ['id']
 
 
 class CommitteeSerializer(serializers.ModelSerializer):
@@ -236,6 +236,7 @@ class ThesisDetailSerializer(serializers.ModelSerializer):
     lecturers = LecturerDetailSerializer(many=True)
     committee = CommitteeDetailSerializer()
     average = serializers.SerializerMethodField(source='average')
+    scores = ScoreDetailSerializer(many=True)
 
     def get_average(self, thesis):
         average = 0.0
@@ -255,4 +256,4 @@ class ThesisDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Thesis
-        fields = ['id', 'name', 'students', 'lecturers', 'committee', 'average', 'created_date', 'updated_date', 'active']
+        fields = ['id', 'name', 'students', 'lecturers', 'committee', 'average', 'created_date', 'updated_date', 'active', 'scores']
