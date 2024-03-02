@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { Button } from "react-native"
+import { Button, View } from "react-native"
 import MyContext from "../../configs/MyContext"
 
 const Logout = () =>{
@@ -10,7 +10,11 @@ const Logout = () =>{
         })
     }
 
-    return <Button title="Đăng xuất" onPress={logout} />
+    return (
+        <View style={{marginEnd: 10}}>
+            <Button title="Đăng xuất" onPress={logout}/>
+        </View>
+    )
 }
 
 export default Logout;

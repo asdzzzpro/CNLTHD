@@ -11,12 +11,14 @@ export const endpoints = {
     'scoring': (thesisId) => `/theses/${thesisId}/scores/`,
     'change-password': '/users/change-password/',
     'theses': '/theses/',
-    'thesis-of-student': '/students/thesis',
+    'thesis-of-student': '/students/thesis/',
     'students': '/students/',
     'lecturers': '/lecturers/',
     'committees': '/committees/',
-    'add-committee-to-thesis': (thesisId) => `/theses/${thesisId}/committee`,
+    'add-committee-to-thesis': (thesisId) => `/theses/${thesisId}/committee/`,
     'committee-detail': (committeeId) => `/committees/${committeeId}/`,
+    'close-committee': (committeeId) => `/committees/${committeeId}/active/`,
+    'get-scores': (memberId, thesisId) => `/members/${memberId}/scores/?thesis_id=${thesisId}`
 }
 
 export const authAPI = (accessToken) => axios.create({

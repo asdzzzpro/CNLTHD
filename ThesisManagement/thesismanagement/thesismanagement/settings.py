@@ -156,3 +156,8 @@ CLIENT_SECRET = '5YGhTOHq1VAcHuzoWhs5Dq7aRuO169iFrT6ysn3JQgbbUIFQLOGLdqwCM6RvfEh
 OAUTH2_PROVIDER = {
     'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
 }
+
+import os
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = "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"
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False

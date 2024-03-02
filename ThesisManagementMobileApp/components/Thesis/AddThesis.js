@@ -32,7 +32,10 @@ const AddThesis = ({navigation}) => {
         const loadStudents = async () => {
             let accessToken = await AsyncStorage.getItem('access-token')
             let res = await authAPI(accessToken).get(endpoints['students'])
-            let students = res.data.map(student => ({ label: student.fullname, value: student.id }))
+
+            let students = res.data.filter(student => student.thesis_id === null)
+            students = students.map(student => ({ label: student.fullname, value: student.id, thesis: student.thesis_id}))
+            
             setStudens(students)
         }
         loadStudents();
@@ -48,7 +51,10 @@ const AddThesis = ({navigation}) => {
         const loadCommittees = async () => {
             let accessToken = await AsyncStorage.getItem('access-token')
             let res = await authAPI(accessToken).get(endpoints['committees'])
-            let committees = res.data.map(committee => ({ label: committee.name, value: committee.id }))
+
+            let committees = res.data.filter(committee => committee.theses.length < 5)
+            committees = committees.map(committee => ({ label: committee.name, value: committee.id }))
+            
             setCommittees(committees)
         }
         loadCommittees();

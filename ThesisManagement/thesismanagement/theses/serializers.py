@@ -74,7 +74,7 @@ class StudentDetailSerializer(StudentSerializer):
 
     class Meta:
         model = StudentSerializer.Meta.model
-        fields = StudentSerializer.Meta.fields + ['fullname', 'username', 'password', 'email', 'faculty', 'major', 'avatar']
+        fields = StudentSerializer.Meta.fields + ['fullname', 'username', 'password', 'email', 'faculty', 'major', 'avatar', 'thesis_id']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -195,7 +195,7 @@ class CommitteeDetailSerializer(CommitteeSerializer):
 
     class Meta:
         model = CommitteeSerializer.Meta.model
-        fields = CommitteeSerializer.Meta.fields
+        fields = CommitteeSerializer.Meta.fields + ['created_date', 'updated_date', 'active', 'theses']
 
 
 class CriteriaSerializer(serializers.ModelSerializer):
@@ -219,6 +219,18 @@ class ScoreSerializer(serializers.ModelSerializer):
         fields = ['thesis', 'member', 'criteria_id', 'score']
 
 
+class ScoreDetailSerializer(serializers.ModelSerializer):
+    lecturer_id = serializers.SerializerMethodField(source='lecturer_id')
+    criteria = CriteriaDetailSerializer()
+
+    def get_lecturer_id(self, score):
+        return score.member.lecturer.id
+
+    class Meta:
+        model = Score
+        fields = ['id', 'thesis_id', 'lecturer_id', 'criteria', 'score']
+
+
 class ThesisDetailSerializer(serializers.ModelSerializer):
     students = StudentDetailSerializer(many=True)
     lecturers = LecturerDetailSerializer(many=True)
@@ -230,12 +242,14 @@ class ThesisDetailSerializer(serializers.ModelSerializer):
         if thesis.commitee:
             criteria_count = Criteria.objects.count()
 
-            for score in thesis.scores.all():
-                average = average + score.score
+            if criteria_count != 0:
+                for score in thesis.scores.all():
+                    average = average + score.score
 
-            average = float(average / (criteria_count * thesis.committee.members.all().count()))
+                average = float(average / (criteria_count * thesis.committee.members.all().count()))
+                average = round(average, 2)
 
-            return round(average, 2)
+                return average
 
         return average
 

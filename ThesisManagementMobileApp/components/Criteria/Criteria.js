@@ -7,7 +7,7 @@ import Style from "./Style";
 
 const Criteria = () => {
     const [criteria, setCriteria] = useState(null)
-    const [isHidden, setIsHidden] = useState(false);
+    const [isHidden, setIsHidden] = useState(true);
     const [name, setName] = useState('');
 
     useEffect(() => {
@@ -50,32 +50,38 @@ const Criteria = () => {
     };
 
     return (
-        <ScrollView>
-            {criteria === null ? <ActivityIndicator /> : <>
-                {criteria.map(criteria => (
-                    <Text style={[MyStyle.mb_20, Style.text, Style.card]}>Tiêu Chí {criteria.id}: {criteria.name}</Text>
-                ))}
-            </>}
 
-            <TouchableOpacity onPress={toggleVisibility} style={[Style.button, MyStyle.mb_20, { width: "50%", display: isHidden ? 'flex' : 'none' }]}>
-                <Text>Thêm Tiêu Chí Mới</Text>
-            </TouchableOpacity>
-            <View style={{ display: isHidden ? 'none' : 'flex', width: '100%' }}>
-                <Text style={Style.text}>Nhập tên tiêu chí:</Text>
-                <TextInput style={[Style.input]} onChangeText={t => handleCriteriaChange(t)} />
-                <View style={[MyStyle.mb_20, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                    <TouchableOpacity onPress={createCriteria} style={[Style.button, MyStyle.mb_20, { width: "50%", backgroundColor: "#FF4D4D" }]}>
-                        <Text>Lưu</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[Style.button, MyStyle.mb_20, { width: '45%', backgroundColor: 'orange' }]} onPress={toggleVisibility}>
-                        <Text>Hủy</Text>
+        <View>
+            {isHidden ? <>
+                <View style={{ width: '100%', justifyContent: 'center', marginVertical: 10, alignItems: 'center' }}>
+                    <TouchableOpacity onPress={toggleVisibility} style={[Style.button, { width: "90%" }]}>
+                        <Text style={Style.text}>Thêm Tiêu Chí Mới</Text>
                     </TouchableOpacity>
                 </View>
-
+            </> : <>
+                <View style={{ width: '100%', justifyContent: 'center', marginVertical: 10, alignItems: 'center' }}>
+                    <Text style={Style.subject}>Nhập tên tiêu chí:</Text>
+                    <TextInput style={[Style.input, { marginVertical: 10 }]} onChangeText={t => handleCriteriaChange(t)} />
+                    <View style={[MyStyle.row, { width: '90%', alignItems: 'center', justifyContent: 'space-between' }]}>
+                        <TouchableOpacity style={[Style.button, { width: "40%", backgroundColor: "#FF4D4D" }]} onPress={createCriteria}>
+                            <Text style={Style.text}>Lưu</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[Style.button, { width: '40%', backgroundColor: 'orange' }]} onPress={toggleVisibility}>
+                            <Text style={Style.text}>Hủy</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </>}
+            <View style={{height: isHidden ? '90%' : '77%', paddingVertical: 10}}>
+                <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+                    {criteria === null ? <ActivityIndicator /> : <>
+                        {criteria.map(criteria => (
+                            <Text style={[MyStyle.mb_20, Style.subject, Style.card]}>Tiêu Chí {criteria.id}: {criteria.name}</Text>
+                        ))}
+                    </>}
+                </ScrollView>
             </View>
-
-
-        </ScrollView>
+        </View>
     )
 }
 

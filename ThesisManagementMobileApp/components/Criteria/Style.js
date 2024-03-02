@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-    text:{
+    subject:{
         fontSize: 20,
         fontWeight: 'bold',
     },
@@ -32,4 +32,9 @@ export default StyleSheet.create({
         elevation: 5,
         shadowColor: 'black',
     },
+    text: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    }
 })

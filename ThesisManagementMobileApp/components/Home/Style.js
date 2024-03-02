@@ -10,7 +10,8 @@ export default StyleSheet.create({
     },
     title: {
         width: '80%',
-        fontSize: 24
+        fontSize: 24,
+        fontWeight: 'bold'
     },
     score: {
         width: '20%',

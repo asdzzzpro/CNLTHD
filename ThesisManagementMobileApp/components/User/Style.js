@@ -37,13 +37,12 @@ export default StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
         color: '#2e5fa5',
-        marginBottom: 40
+        marginBottom: 20
     },
     item:{
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 24,
+        marginBottom: 10
     },
-    picker: {
-        zIndex: 100
-    }
+    
 });

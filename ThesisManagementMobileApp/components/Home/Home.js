@@ -76,33 +76,35 @@ const Home = ({ navigation }) => {
     }
 
     return (
-        <View>
+        <View style={{flex: 1}}>
+            <View style={{height: '90%'}}>
+                <ScrollView contentContainerStyle={{ alignItems: 'center', marginTop: 20, paddingBottom: 20}}>
+                    {theses === null ? <ActivityIndicator /> : <>
+                        {theses.map(thesis => (
+                            <TouchableOpacity onPress={() => thesisDetail(thesis.id)}>
+                                <View style={[MyStyle.elevation, Style.card, MyStyle.mb_20]} >
+                                    <View style={[MyStyle.row, MyStyle.between]}>
+                                        <Text style={[Style.title]}>{thesis.name}</Text>
+                                        <Text style={[MyStyle.elevation, Style.score]}>{thesis.average}</Text>
+                                    </View>
+                                    <Text style={[MyStyle.f_16]}>SV:{thesis.students.map(student => student.fullname)}</Text>
+                                    <Text style={[MyStyle.f_16]}>GVHD:{thesis.lecturers.map(lecturer => ' ' + lecturer.fullname)}</Text>
+                                    <Text style={[MyStyle.f_16]}>Hội đồng: {thesis.committee ? thesis.committee.name : 'Chưa thêm hội đồng'}</Text>
+                                    <Text style={[MyStyle.f_16]}>Ngày tạo: {moment(thesis.created_date).locale("vi").fromNow()}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </>}
+                </ScrollView>
+            </View>
+
             {user.role === 'academic_manager' ? <>
-                <View style={{width: '100%', marginTop: 20, alignItems: 'center'}}>
-                    <TouchableOpacity style={[Style.button, {width: '90%'}]} onPress={addThesis}>
+                <View style={{width: '100%', justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                    <TouchableOpacity style={[Style.button, { width: '90%' }]} onPress={addThesis}>
                         <Text style={Style.text}>Thêm khóa luận</Text>
                     </TouchableOpacity>
                 </View>
             </> : <></>}
-
-            <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-                {theses === null ? <ActivityIndicator /> : <>
-                    {theses.map(thesis => (
-                        <TouchableOpacity onPress={() => thesisDetail(thesis.id)}>
-                            <View style={[MyStyle.elevation, Style.card, MyStyle.mb_20]} >
-                                <View style={[MyStyle.row, MyStyle.between]}>
-                                    <Text style={[Style.title]}>{thesis.name}</Text>
-                                    <Text style={[MyStyle.elevation, Style.score]}>{thesis.average}</Text>
-                                </View>
-                                <Text style={[MyStyle.f_16]}>SV: {thesis.students.map(student => student.fullname)}</Text>
-                                <Text style={[MyStyle.f_16]}>GVHD: {thesis.lecturers.map(lecturer => lecturer.fullname)}</Text>
-                                <Text style={[MyStyle.f_16]}>Hội đồng: {thesis.committee?thesis.committee.name:'Chưa thêm hội đồng'}</Text>
-                                <Text style={[MyStyle.f_16]}>Ngày tạo: {moment(thesis.created_date).fromNow()}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                </>}
-            </ScrollView>
         </View>
     )
 }

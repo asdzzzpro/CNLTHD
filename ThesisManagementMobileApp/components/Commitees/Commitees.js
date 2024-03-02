@@ -8,7 +8,12 @@ import { authAPI, endpoints } from "../../configs/API";
 
 const Committees = ({ navigation }) => {
 
-    const [committees, setCommittees] = useState(null);
+    const [committees, setCommittees] = useState(null)
+    const [refresh, setRefresh] = useState(false)
+
+    const handleReload = () => {
+      setRefresh((prevRefresh) => !prevRefresh);
+    }
 
     useEffect(() => {
         const loadCommittees = async () => {
@@ -23,38 +28,70 @@ const Committees = ({ navigation }) => {
         }
         console.info(committees)
         loadCommittees();
-    }, [navigation]);
+    }, [refresh]);
 
     const detail = (committee) => {
-        navigation.navigate('CommitteesDetail', {'committee':committee})
+        navigation.navigate('CommitteesDetail', { 'committee': committee })
+        setRefresh(true)
     }
 
     const addCommittees = () => {
         navigation.navigate('AddCommittees')
+        setRefresh(true)
     }
     
+    const close = async (committeeId) => {
+        try {
+            let accessToken = await AsyncStorage.getItem('access-token')
+            let res = await authAPI(accessToken).patch(endpoints['close-committee'](committeeId))
+        } catch (ex) {
+            console.error(ex)
+        }
+
+        handleReload()
+    }
 
     return (
-        <ScrollView contentContainerStyle={{ alignItems: 'flex-start'}}>
-            {committees === null ? <ActivityIndicator /> : <>
-                {committees.map(committee => (
-                    <TouchableOpacity onPress={() => detail(committee)} style={[Style.card, MyStyle.mb_20]}>
-                        <Text style={[Style.text]}>{committee.name}</Text>
-                        <Text style={[Style.item]}>Thành viên:</Text>
-                        {committee.members && committee.members.map((member, memberIndex) => (
-                            <View key={memberIndex}>
-                                <Text>{member.lecturer.fullname}</Text>
-                            </View>
-                        ))}
-                    </TouchableOpacity>
-                ))}
-            </>}
-            
-            <TouchableOpacity onPress={() => addCommittees()}>
-                <Text style={[Style.button]}>Thêm Hội Đồng Mới</Text>
-            </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+            <View style={{ height: '90%' }}>
+                <ScrollView contentContainerStyle={{ alignItems: 'center', marginTop: 20, paddingBottom: 10 }}>
+                    {committees === null ? <ActivityIndicator /> : <>
+                        {committees.map(committee => (
 
-        </ScrollView>
+                            <TouchableOpacity onPress={() => detail(committee)} style={[Style.card, MyStyle.mb_20, MyStyle.row, { justifyContent: 'space-between' }]}>
+                                <View>
+                                    <Text style={[Style.text]}>{committee.name}</Text>
+                                    <Text style={[Style.item]}>Thành viên:</Text>
+                                    {committee.members && committee.members.map((member, memberIndex) => (
+                                        <View key={memberIndex}>
+                                            <Text>{member.lecturer.fullname}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+                                {committee.active ? <>
+                                    <View style={{ width: '30%', justifyContent: 'center' }}>
+                                        <TouchableOpacity style={[Style.button, { backgroundColor: 'red' }]} onPress={() => close(committee.id)}>
+                                            <Text style={[Style.text, { color: 'white' }]}>Đóng</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </> : <>
+                                    <View style={{ width: '30%', justifyContent: 'center' }}>
+                                        <TouchableOpacity style={[Style.button, { backgroundColor: 'green' }]} onPress={() => close(committee.id)}>
+                                            <Text style={[Style.text, { color: 'white' }]}>Mở</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </>}
+                            </TouchableOpacity>
+                        ))}
+                    </>}
+                </ScrollView>
+            </View>
+            <View style={{ width: '100%', justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                <TouchableOpacity style={[Style.button, { width: '90%' }]} onPress={() => addCommittees()}>
+                    <Text style={[Style.text, { color: 'white' }]}>Thêm hội đồng</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
     )
 }
 
