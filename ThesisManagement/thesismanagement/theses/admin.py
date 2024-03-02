@@ -1,10 +1,23 @@
 from django.contrib import admin
+from django.template.response import TemplateResponse
+from django.urls import path
+
+from . import dao
 from .models import *
 
 
 class CourseAppAdminSite(admin.AdminSite):
     site_header = "HỆ THỐNG QUẢN LÝ KHÓA LUẬN TỐT NGHIỆP"
 
+    def get_urls(self):
+        return [
+                   path('thesis-stats/', self.stats_view)
+               ] + super().get_urls()
+
+    def stats_view(self, request):
+        return TemplateResponse(request, ('admin/stats.html'),{
+            "stats": dao.score_statistics
+        })
 
 class UserAdmin(admin.ModelAdmin):
     fields = ['avatar', 'first_name', 'last_name', 'username', 'password', 'email', 'faculty']

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { authAPI, endpoints } from "../../configs/API";
 import MyStyle from "../../styles/MyStyle";
 import Style from "./Style";
@@ -9,6 +9,11 @@ const Criteria = () => {
     const [criteria, setCriteria] = useState(null)
     const [isHidden, setIsHidden] = useState(true);
     const [name, setName] = useState('');
+    const [refresh, setRefresh] = useState(false)
+
+    const handleReload = () => {
+        setRefresh((prevRefresh) => !prevRefresh);
+      }
 
     useEffect(() => {
         const loadCriteria = async () => {
@@ -24,7 +29,7 @@ const Criteria = () => {
         }
 
         loadCriteria()
-    }, [])
+    }, [refresh])
 
     const createCriteria = async () => {
         try {
@@ -35,10 +40,20 @@ const Criteria = () => {
 
             let res = await authAPI(accessToken).post(endpoints['criteria'], data);
 
-            console.info(res.data);
+            Alert.alert(
+                'Hoàn tất',
+                'Thay đổi thành công!',
+                [
+                    { text: 'OK', onPress: () => console.log('OK') }
+                ],
+                { cancelable: true }
+            )
+            handleReload();
+            
         } catch (error) {
             console.error(error);
         }
+        
     };
 
     const toggleVisibility = () => {

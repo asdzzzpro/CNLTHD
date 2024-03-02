@@ -26,7 +26,7 @@ const Committees = ({ navigation }) => {
                 console.error(error)
             }
         }
-        console.info(committees)
+        // console.info(committees)
         loadCommittees();
     }, [refresh]);
 
