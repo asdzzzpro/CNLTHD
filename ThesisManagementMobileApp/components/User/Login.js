@@ -41,6 +41,7 @@ const Login = ({navigation}) => {
                 ],
                 {cancelable: true}
             )
+            console.error(ex)
         } finally {
             setLoading(false)
         }

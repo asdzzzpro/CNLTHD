@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
 import MyStyle from "../../styles/MyStyle";
 import Style from "./Style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -44,10 +44,27 @@ const Committees = ({ navigation }) => {
         try {
             let accessToken = await AsyncStorage.getItem('access-token')
             let res = await authAPI(accessToken).patch(endpoints['close-committee'](committeeId))
+
+            Alert.alert (
+                'Hoàn tất',
+                'Đóng/mở luận thành công!',
+                [
+                    { text: 'OK', onPress: () => console.log('OK')}
+                ],
+                { cancelable: true }
+            )
+
         } catch (ex) {
+            Alert.alert(
+                'Xác nhận',
+                'Thêm khóa luận không thành công!',
+                [
+                    {text: 'OK', onPress: () => console.log('OK')}
+                ],
+                {cancelable: true}
+            )
             console.error(ex)
         }
-
         handleReload()
     }
 

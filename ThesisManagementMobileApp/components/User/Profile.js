@@ -13,6 +13,12 @@ const Profile = ({ navigation }) => {
         "confirm_password": ""
     })
 
+    const [refresh, setRefresh] = useState(false)
+
+    const handleReload = () => {
+        setRefresh((prevRefresh) => !prevRefresh);
+    }
+
     const [user,] = useContext(MyContext)
     const [theses, setTheses] = useState([]);
     const [isHidden, setIsHidden] = useState(true);
@@ -28,7 +34,7 @@ const Profile = ({ navigation }) => {
         }
 
         loadUser();
-    }, [])
+    }, [refresh])
 
     const toggleVisibility = () => {
         setIsHidden(!isHidden);
@@ -60,6 +66,7 @@ const Profile = ({ navigation }) => {
                     ],
                     { cancelable: true }
                 )
+                setRefresh(True)
                 navigation.navigate("Home");
 
             } catch (ex) {

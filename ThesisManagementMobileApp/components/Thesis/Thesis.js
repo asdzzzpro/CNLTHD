@@ -1,4 +1,4 @@
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import MyStyle from "../../styles/MyStyle";
 import Style from "./Style";
 import { useContext, useEffect, useState } from "react";
@@ -82,20 +82,37 @@ const Thesis = ({ route }) => {
     }
 
     const scoring = () => {
-        criteria.forEach(async criteria => {
-            try {
+        try {
+            criteria.forEach(async criteria => {
                 let accessToken = await AsyncStorage.getItem('access-token')
                 let res = await authAPI(accessToken).post(endpoints['scoring'](thesisId), scores[criteria.id - 1])
 
                 setThesis(res.data)
-            } catch (ex) {
-                console.error(ex);
-            }
-        })
+            })
 
-        setScores([])
-        setIsShow(true)
-        handleReload()
+            Alert.alert(
+                'Hoàn tất',
+                'Thêm điểm thành công!',
+                [
+                    { text: 'OK', onPress: () => console.log('OK') }
+                ],
+                { cancelable: true }
+            )
+
+            setScores([])
+            setIsShow(true)
+            handleReload()
+        } catch (ex) {
+            Alert.alert(
+                'Xác nhận',
+                'Thêm điểm không thành công!',
+                [
+                    { text: 'OK', onPress: () => console.log('OK') }
+                ],
+                { cancelable: true }
+            )
+            console.error(ex)
+        }
     }
 
     const test = () => {
@@ -132,22 +149,44 @@ const Thesis = ({ route }) => {
     }
 
     const changing = () => {
-        for (let i in changeScores) {
-            const scoring = async (score) => {
-                try {
-                    let accessToken = await AsyncStorage.getItem('access-token')
-                    let res = await authAPI(accessToken).patch(endpoints['scoring'](thesisId), score)
+        try {
+            for (let i in changeScores) {
+                const scoring = async (score) => {
+                    try {
+                        let accessToken = await AsyncStorage.getItem('access-token')
+                        let res = await authAPI(accessToken).patch(endpoints['scoring'](thesisId), score)
 
-                    console.info(res.data)
-                } catch (ex) {
-                    console.error(ex);
+                        console.info(res.data)
+                    } catch (ex) {
+                        console.error(ex);
+                    }
                 }
+                scoring(changeScores[i])
             }
-            scoring(changeScores[i])
+
+            Alert.alert(
+                'Hoàn tất',
+                'Chỉnh sủa điểm thành công!',
+                [
+                    { text: 'OK', onPress: () => console.log('OK') }
+                ],
+                { cancelable: true }
+            )
+
+            setChangeScores([])
+            setIsShow(true)
+            handleReload()
+        } catch (ex) {
+            Alert.alert(
+                'Xác nhận',
+                'Chỉnh sửa điểm không thành công!',
+                [
+                    { text: 'OK', onPress: () => console.log('OK') }
+                ],
+                { cancelable: true }
+            )
+            console.error(ex)
         }
-        setChangeScores([])
-        setIsShow(true)
-        handleReload()
     }
 
     const getScores = async (memberId, thesisId) => {
@@ -168,9 +207,9 @@ const Thesis = ({ route }) => {
     const average = (lecturer_id) => {
         let average = 0.0
         thesis.scores.filter(score => score.lecturer_id === lecturer_id)
-        .forEach(score => average += score.score)
+            .forEach(score => average += score.score)
         average = average / criteria.length
-        
+
         return average
     }
 
@@ -248,9 +287,9 @@ const Thesis = ({ route }) => {
                         </thead>
                         <tbody>
                             ${thesis.scores.filter(score => score.lecturer_id === member.lecturer.id)
-                                .map(score =>`<tr><td>${score.criteria.name}</td><td>${score.score}</td></tr>`)
-                                .join().replaceAll(",", "")
-                            }
+                .map(score => `<tr><td>${score.criteria.name}</td><td>${score.score}</td></tr>`)
+                .join().replaceAll(",", "")
+            }
                         </tbody>
                         <tfoot>
                             <tr>
@@ -301,7 +340,7 @@ const Thesis = ({ route }) => {
                                     {criteria.map(criteria => (
                                         <View style={[MyStyle.elevation, MyStyle.mb_20, Style.card, { width: '100%' }]}>
                                             <Text style={[Style.subject]}>{criteria.name}</Text>
-                                            <TextInput style={[Style.input]} onChangeText={t => createForm(criteria.id, parseFloat(t))} placeholder="Nhập điểm" />
+                                            <TextInput maxLength={2} inputMode="decimal" style={[Style.input]} onChangeText={t => createForm(criteria.id, parseFloat(t))} placeholder="Nhập điểm" />
                                         </View>
                                     ))}
                                 </>}
@@ -332,7 +371,7 @@ const Thesis = ({ route }) => {
                                         {criteria.map(criteria => (
                                             <View style={[MyStyle.elevation, MyStyle.mb_20, Style.card, { width: '100%' }]}>
                                                 <Text style={[Style.subject]}>{criteria.name}</Text>
-                                                <TextInput style={[Style.input]} onChangeText={t => change(criteria.id, parseFloat(t))} placeholder="Nhập điểm" />
+                                                <TextInput maxLength={2} inputMode="decimal" style={[Style.input]} onChangeText={t => change(criteria.id, parseFloat(t))} placeholder="Nhập điểm" />
                                             </View>
                                         ))}
                                     </>}

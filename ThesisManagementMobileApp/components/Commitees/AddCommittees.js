@@ -6,7 +6,7 @@ import { authAPI, endpoints } from "../../configs/API";
 import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
 
-const AddCommittees = () => {
+const AddCommittees = ({navigation}) => {
 
     const [name, setName] = useState('');
 
@@ -34,6 +34,12 @@ const AddCommittees = () => {
     const [isHidden, setIsHidden] = useState(true);
     // const [memberCount, setMemberCount] = useState(1);
 
+    const [refresh, setRefresh] = useState(false)
+
+    const handleReload = () => {
+      setRefresh((prevRefresh) => !prevRefresh);
+    }
+
     useEffect(() => {
 
         const loadLecturers = async () => {
@@ -59,8 +65,7 @@ const AddCommittees = () => {
             }
         }
         loadLecturers();
-
-    }, [])
+    }, [refresh])
 
     const createCommittee = async () => {
         try {
@@ -90,7 +95,7 @@ const AddCommittees = () => {
                 'Hoàn tất',
                 'Thay đổi thành công!',
                 [
-                    { text: 'OK', onPress: () => console.log('OK') }
+                    { text: 'OK', onPress: () => {setRefresh(true); navigation.navigate('Committee');}}
                 ],
                 { cancelable: true }
             )

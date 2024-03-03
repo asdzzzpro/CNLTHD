@@ -2,7 +2,7 @@ from datetime import datetime
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from theses import serializers, perms, configs
+from theses import serializers, perms, configs, dao
 from theses.models import *
 from django.core.mail import send_mail
 
@@ -259,3 +259,11 @@ class MemberViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             scores = scores.filter(thesis_id=thesis_id).all()
 
         return Response(serializers.ScoreDetailSerializer(scores, many=True).data, status=status.HTTP_200_OK)
+
+
+class StatsViewSet(viewsets.ViewSet):
+    permission_classes = [perms.IsAcademicManagerAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        data = dao.get_score_by_year(request.data.get('year'))
+        return Response(data, status=status.HTTP_200_OK)

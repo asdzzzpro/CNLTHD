@@ -13,6 +13,12 @@ const Home = ({ navigation }) => {
     const [theses, setTheses] = useState(null)
     const [user,] = useContext(MyContext)
 
+    const [refresh, setRefresh] = useState(false)
+
+    const handleReload = () => {
+        setRefresh((prevRefresh) => !prevRefresh);
+    }
+
     useEffect(() => {
         switch (user.role) {
             case 'academic_manager':
@@ -65,13 +71,15 @@ const Home = ({ navigation }) => {
                 break
 
         }
-    }, [navigation])
+    }, [refresh])
 
     const thesisDetail = (thesisId) => {
+        setRefresh(true)
         navigation.navigate('Thesis', { 'thesisId': thesisId })
     }
 
     const addThesis = () => {
+        setRefresh(true)
         navigation.navigate('AddThesis')
     }
 

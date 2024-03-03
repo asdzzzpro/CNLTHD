@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { authAPI, endpoints } from "../../configs/API";
 import Style from "./Style";
@@ -26,6 +26,12 @@ const AddThesis = ({navigation}) => {
         'lecturers': [],
         'committee': {}
     })
+
+    const [refresh, setRefresh] = useState(false)
+
+    const handleReload = () => {
+        setRefresh((prevRefresh) => !prevRefresh);
+    }
 
 
     useEffect(() => {
@@ -58,7 +64,7 @@ const AddThesis = ({navigation}) => {
             setCommittees(committees)
         }
         loadCommittees();
-    }, [])
+    }, [refresh])
 
     const change = (t) => {
         setThesis(current => {
@@ -88,13 +94,36 @@ const AddThesis = ({navigation}) => {
         setThesis(current => {
             return {...current, 'committee': ({'id': committee})}
         })
+
     }
 
+    console.info(thesis)
+
     const add = async () => {
-        let accessToken = await AsyncStorage.getItem('access-token')
-        let res = await authAPI(accessToken).post(endpoints['theses'], thesis)
-        console.info(res.data.message)
-        navigation.navigate('Home')
+        try {
+            let accessToken = await AsyncStorage.getItem('access-token')
+            let res = await authAPI(accessToken).post(endpoints['theses'], thesis)
+            console.info(res.data.message)    
+
+            Alert.alert (
+                'Hoàn tất',
+                'Thêm khóa luận thành công!',
+                [
+                    { text: 'OK', onPress: () => { setRefresh(true); navigation.navigate('Home');} }
+                ],
+                { cancelable: true }
+            )
+        } catch (ex) {
+            Alert.alert(
+                'Xác nhận',
+                'Thêm khóa luận không thành công!',
+                [
+                    {text: 'OK', onPress: () => console.log('OK')}
+                ],
+                {cancelable: true}
+            )
+            console.error(ex)
+        }
     }
 
     return (
@@ -180,7 +209,7 @@ const AddThesis = ({navigation}) => {
 
             <View style={{ alignItems: 'center', width: '95%', marginVertical: 30}}>
                 <TouchableOpacity style={[Style.button]} onPress={add}>
-                    <Text style={Style.text}>Chấm điểm</Text>
+                    <Text style={Style.text}>Thêm</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -3,11 +3,73 @@
 {% block content %}
 <h1>THỐNG KÊ</h1>
 
-{{stats.total_scores}}
-{{stats.average_score}}
+<div class="row">
+    <div class="col-md-5">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Tên luận văn</th>
+                <th>Điểm</th>
+            <tr>
+            </thead>
+            <tbody>
+            {% for t in stats %}
+                <td>{{t.id}}</td>
+                <td>{{t.name}}</td>
+                <td>{{t.sum}}</td>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+   <div class="col-md-7">
+        <form>
+            <div class="form-group">
+                <div>Năm</div>
+                <input type="number" class="form-control w-25" min="1900" name="year" step="1"/>
+            </div>
+            <div>
+                <input type="submit" value="Lọc dữ liệu" class="btn btn-info"/>
+            </div>
+        </form>
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
 
-<ul>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.onload = function () {
+        const ctx = document.getElementById('myChart');
 
-</ul>
+        let data = [];
+        let labels = [];
 
-{% endblock%}
+        {%for t in stats %}
+        labels.push('{{t.name}}');
+        data.push({{t.sum}});
+        {% endfor %}
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# Số lượng',
+                    data: data,
+                    borderWidth:  5,
+                    borderColor: 'black',
+                    backgroundColor: ['red', 'green', 'blue', 'gold', 'silver']
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

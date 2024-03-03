@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import admin
 from django.template.response import TemplateResponse
 from django.urls import path
@@ -15,9 +17,15 @@ class CourseAppAdminSite(admin.AdminSite):
                ] + super().get_urls()
 
     def stats_view(self, request):
+        year = request.GET.get('year')
+        if year:
+            year=int(year)
+        else:
+            year=datetime.now().year
         return TemplateResponse(request, ('admin/stats.html'),{
-            "stats": dao.score_statistics
+            "stats": dao.get_score_by_year(year=year)
         })
+
 
 class UserAdmin(admin.ModelAdmin):
     fields = ['avatar', 'first_name', 'last_name', 'username', 'password', 'email', 'faculty']
